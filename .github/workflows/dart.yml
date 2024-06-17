@@ -1,0 +1,24 @@
+name: Movies4U Dart Flutter
+
+on:
+  push:
+    branches:
+      - iOSUpdated
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '17.x'
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter build apk
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Movies4u Dart release-apk
+          path: build/app/outputs/apk/release/app-release.apk
