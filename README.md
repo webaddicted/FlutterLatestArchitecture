@@ -1,16 +1,15 @@
-# medibot
+# FlutterLatestArchitecture
 
-A new Flutter project.
 
-## Getting Started
+This Project help in creating FlutterLatestArchitecture.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+## APK
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+***You can Install and test latest FlutterLatestArchitecture app from below 👇***
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[![iOT Bot Connector](https://img.shields.io/badge/Flutter%20Latest%20Architecture%20APK-8A2BE2?style=for-the-badge&logo=android)](https://github.com/webaddicted/FlutterLatestArchitecture/raw/main/apk/build.apk)
+
+
+
+<img src="screenshot/1.jpg" width="205">    <img src="screenshot/2.jpg" width="205">    <img src="screenshot/3.jpg" width="205">   
