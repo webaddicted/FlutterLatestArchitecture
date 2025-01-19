@@ -4,11 +4,15 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:medibot/utils/apiutils/api_response.dart';
 import 'package:medibot/utils/common/global_utilities.dart';
+import 'package:medibot/utils/common/progress_button.dart';
 import 'package:medibot/utils/constant/assets_const.dart';
 import 'package:medibot/utils/constant/color_const.dart';
 import 'package:medibot/utils/constant/routers_const.dart';
@@ -872,4 +876,208 @@ Widget noDataFound() {
     height: 150,
     width: 250,
   ));
+}
+
+Future<bool> checkInternetConnection() async {
+  final bool isConnected =
+      await InternetConnectionChecker.instance.hasConnection;
+  return isConnected;
+}
+
+ElevatedButton btnBorderCorner(String msg, Function() onTap,
+        {FontWeight fontWeight = FontWeight.normal,
+        Color borderColor = Colors.black,
+        double fontSize = 14,
+        Color textColor = Colors.black,
+        Color bgColor = Colors.transparent,
+        double borderSide = 1,
+        double radius = 4}) =>
+    ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            side: BorderSide(width: borderSide, color: borderColor),
+            backgroundColor: bgColor,
+            shadowColor: bgColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(radius)))),
+        onPressed: () => onTap(),
+        child: getTxtColor(
+            msg: msg ?? "",
+            fontWeight: fontWeight,
+            fontSize: fontSize,
+            txtColor: textColor));
+
+Widget btnProgress(String msg,
+    {Color? bgColor,
+    double borderRadius = 4,
+    FontWeight fontWeight = FontWeight.normal,
+    double fontSize = 14,
+    Function(Function startLoading, Function stopLoading, ButtonState btnState)?
+        onTap}) {
+  bgColor = ColorConst.appColor;
+  return Center(
+      child: ProgressButton(
+          height: 50,
+          borderRadius: borderRadius,
+          progressIndicatorSize: 50,
+          animate: true,
+          color: bgColor,
+          width: MediaQuery.of(Get.context!).size.width,
+          child: getTxtWhiteColor(
+              msg: msg, fontWeight: fontWeight, fontSize: fontSize),
+          onTap: (startLoading, stopLoading, btnState) {
+            onTap!(startLoading, stopLoading, btnState);
+          }));
+}
+
+bool isDarkMode() {
+  return false;
+  // ThemeModel.isDarkTheme;
+  var brightness = SchedulerBinding.instance.window.platformBrightness;
+  final isDarkMode = brightness == Brightness.dark;
+  // print("IS Dark Mode system : $isDarkMode \n app : ${ThemeModel.dark}");
+  // ScopedModel.of<ThemeModel>(context).getTheme;
+  return isDarkMode; //appDakMode;
+}
+
+Widget getList(
+    {required double height,
+    required int itemCount,
+    Axis scrollDirection = Axis.vertical,
+    ScrollPhysics? physics,
+    required Function widget}) {
+  return SizedBox(
+      height: height,
+      child: ListView.builder(
+          // physics: BouncingScrollPhysics(),
+          physics: physics ?? const BouncingScrollPhysics(),
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: itemCount,
+          itemBuilder: (context, index) => widget(context, index)));
+}
+
+Widget getGrid({
+  // required double height,
+  required int itemCount,
+  int crossAxisCount = 2,
+  double childAspectRatio = (1.5 / 1.8),
+  ScrollPhysics? physics,
+  required Function widget,
+}) {
+  return GridView.builder(
+      itemCount: itemCount,
+      shrinkWrap: true,
+      physics: physics ?? const BouncingScrollPhysics(),
+      // physics: NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(0),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        childAspectRatio: childAspectRatio,
+      ),
+      itemBuilder: (context, index) => widget(context, index));
+}
+
+Widget getStaggered(
+    {required double height,
+    required int itemCount,
+    int crossAxisCount = 2,
+    double childAspectRatio = (1.5 / 1.8),
+    required Function widget,
+    ScrollPhysics? physics,
+    ScrollController? controller}) {
+  return GridView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      semanticChildCount: 5,
+      itemCount: itemCount,
+      gridDelegate: SliverStairedGridDelegate(
+          crossAxisSpacing: 48,
+          mainAxisSpacing: 24,
+          startCrossAxisDirectionReversed: true,
+          pattern: const [
+            StairedGridTile(0.5, 1),
+            StairedGridTile(0.5, 3 / 4),
+            StairedGridTile(1.0, 10 / 4)
+          ]),
+      itemBuilder: (BuildContext context, int index) {
+        return widget(context, index);
+      });
+  return GridView.builder(
+    itemCount: itemCount,
+    padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 2.0),
+    gridDelegate:
+        const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+    itemBuilder: (context, index) {
+      return widget(context, index);
+    },
+  );
+  // return StaggeredGridView.countBuilder(
+  //     crossAxisCount: crossAxisCount,
+  //     mainAxisSpacing: 1.0,
+  //     crossAxisSpacing: 1.0,
+  //     shrinkWrap: true,
+  // controller: controller,
+  //     padding: const EdgeInsets.all(0),
+  //     staggeredTileBuilder: (int index) => StaggeredTile.extent(1, height),
+  //     physics: physics ?? const BouncingScrollPhysics(),
+  //     itemCount: itemCount,
+  //     itemBuilder: (BuildContext context, int index) => widget(context, index));
+}
+
+Widget getHeading(
+    {String title = '', bool viewAllShow = true, Function? onClick}) {
+  return Container(
+      margin: const EdgeInsets.only(left: 8, right: 8, bottom: 15, top: 10),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        getTxtBlackColor(msg: title, fontSize: 19, fontWeight: FontWeight.w700),
+        if (viewAllShow)
+          InkWell(
+              onTap: () => onClick!(title),
+              child: Container(
+                  child: getTxtAppColor(
+                      msg: 'View All',
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800)))
+      ]));
+}
+
+getTextFormFieldOutline(
+    {String hint = "Enter text",
+    Color? borderColor,
+    double borderRadius = 3.0,
+    double borderWidth = 1.0,
+    Icon? prefixIcon,
+    Color? fillColor,
+    bool? filled}) {
+  borderColor = ColorConst.appColor;
+  return InputDecoration(
+      counterText: "",
+      fillColor: fillColor,
+      filled: filled,
+      prefixIcon: prefixIcon,
+      prefixIconColor: Colors.grey,
+      border: OutlineInputBorder(
+          gapPadding: 30, borderRadius: BorderRadius.circular(borderRadius)),
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+      hintText: hint,
+      hintStyle:
+          const TextStyle(fontWeight: FontWeight.w500, color: Colors.grey),
+      errorStyle: const TextStyle(fontWeight: FontWeight.w500),
+      labelStyle: const TextStyle(fontWeight: FontWeight.w500),
+      enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(width: borderWidth, color: Colors.grey),
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
+      focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(width: borderWidth, color: borderColor),
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
+      disabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(width: borderWidth, color: Colors.grey),
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
+      errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(width: borderWidth, color: Colors.red),
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
+      focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(width: borderWidth, color: Colors.red),
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius))));
 }

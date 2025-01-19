@@ -4,40 +4,25 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader("UTF-8") { reader ->
-        localProperties.load(reader)
-    }
-}
-
-def flutterVersionCode = localProperties.getProperty("flutter.versionCode")
-if (flutterVersionCode == null) {
-    flutterVersionCode = "1"
-}
-
-def flutterVersionName = localProperties.getProperty("flutter.versionName")
-if (flutterVersionName == null) {
-    flutterVersionName = "1.0"
-}
-
 android {
     namespace = "com.healthcare.medibot"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35//flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17
+    }
     defaultConfig {
         applicationId = "com.healthcare.medibot"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutterVersionCode.toInteger()
-        versionName = flutterVersionName
+        minSdk = 24//flutter.minSdkVersion
+        targetSdk = 35//flutter.targetSdkVersion
+        versionCode = 1//flutterVersionCode.toInteger()
+        versionName = "1.0.0"//flutterVersionName
     }
 
     buildTypes {
@@ -52,4 +37,7 @@ flutter {
 }
 dependencies {
     implementation 'com.google.android.material:material:1.12.0'
+}
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << "-Xlint:-options"
 }
