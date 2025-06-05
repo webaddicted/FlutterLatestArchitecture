@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medibot/utils/constant/color_const.dart';
+import 'package:pingmexx/utils/constant/color_const.dart';
 
 class SlideDots extends StatelessWidget {
   bool isActive;

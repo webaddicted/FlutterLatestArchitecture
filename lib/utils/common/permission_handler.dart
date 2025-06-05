@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:medibot/utils/constant/color_const.dart';
-import 'package:medibot/utils/widgethelper/widget_helper.dart';
+import 'package:pingmexx/utils/constant/color_const.dart';
+import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 enum PermissionType {

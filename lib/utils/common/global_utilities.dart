@@ -7,9 +7,9 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:logger/logger.dart';
-import 'package:medibot/utils/apiutils/api_response.dart';
-import 'package:medibot/utils/constant/color_const.dart';
-import 'package:medibot/utils/sp/sp_manager.dart';
+import 'package:pingmexx/utils/apiutils/api_response.dart';
+import 'package:pingmexx/utils/constant/color_const.dart';
+import 'package:pingmexx/utils/sp/sp_manager.dart';
 import 'package:get/get.dart';
 //  {START PAGE NAVIGATION}
 void navigationPush(BuildContext context, StatefulWidget route) {

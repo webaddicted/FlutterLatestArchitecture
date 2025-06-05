@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:medibot/utils/constant/assets_const.dart';
-import 'package:medibot/utils/constant/color_const.dart';
-import 'package:medibot/utils/constant/routers_const.dart';
-import 'package:medibot/utils/widgethelper/widget_helper.dart';
-import 'package:medibot/view/widget/slide_dots.dart';
+import 'package:pingmexx/utils/constant/assets_const.dart';
+import 'package:pingmexx/utils/constant/color_const.dart';
+import 'package:pingmexx/utils/constant/routers_const.dart';
+import 'package:pingmexx/utils/sp/sp_manager.dart';
+import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
+import 'package:pingmexx/view/widget/slide_dots.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -65,6 +66,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   if (!inFinalPage())
                     InkWell(
                       onTap: () {
+                        SPManager.setOnboarding(true);
                         Map<String, dynamic> map = {};
                         map["openFromHome"] = false;
                         Get.offAllNamed(RoutersConst.login,
@@ -108,21 +110,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
     Slider slider = sliderArrayList[index];
     return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          SizedBox(
-            width: Get.width,
-            height: Get.height * 0.556,
-            child: SvgPicture.asset(
-              slider.sliderImageUrl,
-              width: Get.width,
-            ),
-            //   decoration: BoxDecoration(
-            //       image: DecorationImage(
-            //           fit: BoxFit.fill,
-            //           image:AssetImage(sliderArrayList[index].sliderImageUrl))),
+          Container(
+            width: 320,
+            height: 320,
+            // child: SvgPicture.asset(
+            //   slider.sliderImageUrl,
+            //   width: Get.width,
             // ),
-          ),
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image:AssetImage(sliderArrayList[index].sliderImageUrl,))),
+            ),
+          // ),
           const SizedBox(height: 20),
           getTxtColor(
             msg: slider.sliderHeading,
@@ -152,6 +154,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   borderRadius: BorderRadius.circular(27.0),
                 ),
                 onPressed: () async {
+                  SPManager.setOnboarding(true);
                   Map<String, dynamic> map = {};
                   map["openFromHome"] = false;
                   Get.offAllNamed(RoutersConst.login, arguments: map);

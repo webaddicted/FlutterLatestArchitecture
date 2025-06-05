@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:medibot/data/bean/user/update_profile_req.dart';
-import 'package:medibot/utils/constant/string_const.dart';
-import 'package:medibot/utils/sp/sp_helper.dart';
+import 'package:pingmexx/data/bean/user/update_profile_req.dart';
+import 'package:pingmexx/utils/constant/string_const.dart';
+import 'package:pingmexx/utils/sp/sp_helper.dart';
 
 class SPManager {
   static setTheme(bool isDark) {

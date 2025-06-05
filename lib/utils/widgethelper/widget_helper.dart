@@ -10,15 +10,15 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:medibot/utils/apiutils/api_response.dart';
-import 'package:medibot/utils/common/global_utilities.dart';
-import 'package:medibot/utils/common/progress_button.dart';
-import 'package:medibot/utils/constant/assets_const.dart';
-import 'package:medibot/utils/constant/color_const.dart';
-import 'package:medibot/utils/constant/routers_const.dart';
-import 'package:medibot/utils/constant/string_const.dart';
-import 'package:medibot/utils/sp/sp_manager.dart';
-import 'package:medibot/utils/widgethelper/validation_helper.dart';
+import 'package:pingmexx/utils/apiutils/api_response.dart';
+import 'package:pingmexx/utils/common/global_utilities.dart';
+import 'package:pingmexx/utils/common/progress_button.dart';
+import 'package:pingmexx/utils/constant/assets_const.dart';
+import 'package:pingmexx/utils/constant/color_const.dart';
+import 'package:pingmexx/utils/constant/routers_const.dart';
+import 'package:pingmexx/utils/constant/string_const.dart';
+import 'package:pingmexx/utils/sp/sp_manager.dart';
+import 'package:pingmexx/utils/widgethelper/validation_helper.dart';
 
 //  {START PAGE NAVIGATION}
 void navigationPush(BuildContext context, StatefulWidget route) {
@@ -75,7 +75,7 @@ Text getTxtAppColor(
     {required String? msg,
     double fontSize = 12,
     FontWeight fontWeight = FontWeight.normal,
-    int maxLines = 1,
+    int? maxLines,
     TextAlign? textAlign}) {
   return Text(msg ?? "",
       maxLines: maxLines,
@@ -154,7 +154,7 @@ Text getTxtGreyColor(
     {required String? msg,
     double fontSize = 12,
     FontWeight fontWeight = FontWeight.normal,
-    int maxLines = 1,
+    int? maxLines,
     TextAlign textAlign = TextAlign.start}) {
   return Text(msg ?? "",
       textAlign: textAlign,
@@ -170,7 +170,7 @@ Text getTxtColor(
     required Color txtColor,
     double fontSize = 12,
     FontWeight fontWeight = FontWeight.normal,
-    int maxLines = 1,
+    int? maxLines,
     TextAlign textAlign = TextAlign.start}) {
   return Text(msg ?? "",
       textAlign: textAlign,
@@ -746,13 +746,13 @@ showLoadingDialog({BuildContext? ctx}) => showDialog(
 
 Widget showError(String? error) {
   return Visibility(
-      visible: (error!.isNotEmpty) ? false : true,
+      visible: isEmpty(error)==false,
       child: getTxtColor(msg: error ?? '', txtColor: ColorConst.redColor));
 }
 
 getSnackbar(
     {String? title = "", String? subTitle = "", bool isSuccess = false}) {
-  printLog(msg: 'object: data $title\n$subTitle');
+  // printLog(msg: 'object: data $title\n$subTitle');
   try {
     Get.snackbar(title ?? "", subTitle ?? "",
         backgroundColor:
@@ -849,10 +849,16 @@ Widget apiHandler<T>(String apiName,
           );
       break;
     case ApiStatus.error:
+      var errorApiName = "";
+      if (kDebugMode) {
+        errorApiName = apiName.toString();
+      }
       return Center(
         child: getTxtColor(
-            msg: response?.apiError?.errorMessage,
-            txtColor: ColorConst.redColor),
+            msg: "$errorApiName${response?.apiError?.errorMessage}${response?.message}",
+            txtColor: ColorConst.redColor,
+          textAlign: TextAlign.center,
+        ),
       );
     case ApiStatus.success:
       return Container();
@@ -869,7 +875,8 @@ Widget apiHandler<T>(String apiName,
             child: getTxtAppColor(
                 msg: StringConst.somethingWentWrong +
                     errorApiName +
-                    (response?.message ?? "")));
+                    (response?.message ?? ""),
+            textAlign: TextAlign.center));
       }
   }
 }

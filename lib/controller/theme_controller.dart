@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:medibot/utils/sp/sp_manager.dart';
+import 'package:pingmexx/utils/sp/sp_manager.dart';
 
 class ThemeController extends GetxController {
   static ThemeController get to => Get.find();

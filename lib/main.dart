@@ -2,22 +2,26 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:medibot/utils/common/app_theme.dart';
-import 'package:medibot/utils/constant/routers_const.dart';
-import 'package:medibot/utils/constant/routes.dart';
-import 'package:medibot/utils/constant/string_const.dart';
-import 'package:medibot/utils/sp/sp_helper.dart';
-import 'package:medibot/utils/sp/sp_manager.dart';
-import 'package:medibot/utils/widgethelper/initial_binding.dart';
-import 'package:medibot/view/splash/splash_page.dart';
+import 'package:pingmexx/utils/common/app_theme.dart';
+import 'package:pingmexx/utils/constant/routers_const.dart';
+import 'package:pingmexx/utils/constant/routes.dart';
+import 'package:pingmexx/utils/constant/string_const.dart';
+import 'package:pingmexx/utils/sp/sp_helper.dart';
+import 'package:pingmexx/utils/widgethelper/initial_binding.dart';
+import 'package:pingmexx/view/splash/splash_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  _initLibrary();
   runApp(const MyApp());
+
 }
 _initLibrary() async {
   await SPHelper.init();
+  await dotenv.load();
+  var apiKey = dotenv.env['apiKey']??"";
   if(defaultTargetPlatform==TargetPlatform.android) {
     // await initFirebase();
   }

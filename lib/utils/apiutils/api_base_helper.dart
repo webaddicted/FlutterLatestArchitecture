@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:medibot/utils/constant/api_constant.dart';
-import 'package:medibot/utils/constant/string_const.dart';
+import 'package:pingmexx/utils/common/global_utilities.dart';
+import 'package:pingmexx/utils/constant/api_constant.dart';
+import 'package:pingmexx/utils/constant/string_const.dart';
 import 'package:dio/dio.dart';
 
 class ApiBaseHelper {
@@ -11,7 +12,7 @@ class ApiBaseHelper {
     BaseOptions options = BaseOptions(
         receiveTimeout: const Duration(seconds: ApiConstant.timeOut),
         connectTimeout: const Duration(seconds: ApiConstant.timeOut));
-    if(ApiConstant.isDebug) {
+    if (ApiConstant.isDebug) {
       options.baseUrl = ApiConstant.qaBaseUrl;
     } else {
       options.baseUrl = ApiConstant.baseUrl;
@@ -21,112 +22,122 @@ class ApiBaseHelper {
     _dio.options.headers["Authorization"] =
         "Bearer ${ApiConstant.ACCESS_TOKEN}";
     // _dio.interceptors.add(AppInterceptors(_dio));
-    _dio.interceptors.add(LogInterceptor(responseBody: true,request: true, requestBody: true,requestHeader: true));
+    _dio.interceptors.add(LogInterceptor(
+        responseBody: true,
+        request: true,
+        requestBody: true,
+        requestHeader: true));
   }
 
   Future<Response<dynamic>> get(
       {String url = '', Map<String, dynamic>? params}) async {
+    if (!await checkInternetConnection()) {
+      return Response(
+          requestOptions: RequestOptions(path: url),
+          statusCode: ApiResponseCode.internetUnavailable,
+          statusMessage: StringConst.noInternetConnection);
+    }
     params = removeNullKeyValue(params);
-    Response response = await _dio.get(url,
+    return await _dio.get(url,
         queryParameters: params,
         options: Options(
             responseType: ResponseType.json,
-            contentType: Headers.jsonContentType,
-            validateStatus: (status) {
-              return status! < 500;
-            }));
-    return response;
+            contentType: Headers.jsonContentType));
   }
 
   Future<Response<dynamic>> getAnyResponse(
       {String url = '', Map<String, dynamic>? params}) async {
+    if (!await checkInternetConnection()) {
+      return Response(
+          requestOptions: RequestOptions(path: url),
+          statusCode: ApiResponseCode.internetUnavailable,
+          statusMessage: StringConst.noInternetConnection);
+    }
     params = removeNullKeyValue(params);
-    Response response = await _dio.get(url,
+    return await _dio.get(url,
         queryParameters: params,
-        options: Options(
-            responseType: ResponseType.json,
-            validateStatus: (status) {
-              return status! < 500;
-            }));
-    return response;
+        options: Options(responseType: ResponseType.json));
   }
 
   Future<Response<dynamic>> getWithParam(
       {String endpoint = '', Map<String, dynamic>? params}) async {
-    Response response;
-    params = removeNullKeyValue(params);
     try {
-      response = await _dio.get(endpoint,
+      if (!await checkInternetConnection()) {
+        return Response(
+            requestOptions: RequestOptions(path: endpoint),
+            statusCode: ApiResponseCode.internetUnavailable,
+            statusMessage: StringConst.noInternetConnection);
+      }
+      params = removeNullKeyValue(params);
+      return await _dio.get(endpoint,
           queryParameters: params,
           options: Options(
               responseType: ResponseType.json,
-              contentType: Headers.jsonContentType,
-              validateStatus: (status) {
-                return status! < 500;
-              }));
-    } on Exception catch (_) {
-      response = Response(requestOptions: RequestOptions(path: 'path'));
-      response.statusCode = ApiResponseCode.internetUnavailable;
-      response.statusMessage = StringConst.noInternetConnection;
+              contentType: Headers.jsonContentType));
     } catch (e) {
-      response = Response(requestOptions: RequestOptions(path: 'path'));
-      response.statusCode = ApiResponseCode.unknown;
-      response.statusMessage = "$e ${StringConst.somethingWentWrong}";
+      return Response(
+          requestOptions: RequestOptions(path: endpoint),
+          statusCode: 999,
+          statusMessage: e.toString());
     }
-    return response;
   }
+
   Map<String, dynamic>? removeNullKeyValue(Map<String, dynamic>? map) {
     map?.removeWhere((key, value) {
       if (value is Map) {
-        removeNullKeyValue(value.cast<String, dynamic>()); // Ensure the nested map is also of type Map<String, dynamic>
+        removeNullKeyValue(value.cast<String, dynamic>());
       }
       if (value is List) {
         return value.isEmpty;
       }
       return value == null || (value is String && value.isEmpty);
     });
-
     return map;
   }
 
-  Future<Response> post({String url = '', params}) async {
+  Future<Response> post({String url = '', dynamic params}) async {
+    if (!await checkInternetConnection()) {
+      return Response(
+          requestOptions: RequestOptions(path: url),
+          statusCode: ApiResponseCode.internetUnavailable,
+          statusMessage: StringConst.noInternetConnection);
+    }
     params = removeNullKeyValue(params);
-    var response = await _dio.post(url,
+    return await _dio.post(url,
         data: params,
         options: Options(
             responseType: ResponseType.json,
-            contentType: Headers.jsonContentType,
-            validateStatus: (status) {
-              return status! < 500;
-            }));
-
-    return response;
+            contentType: Headers.jsonContentType));
   }
 
-  Future<Response> put({String url = '', params}) async {
+  Future<Response> put({String url = '', dynamic params}) async {
+    if (!await checkInternetConnection()) {
+      return Response(
+          requestOptions: RequestOptions(path: url),
+          statusCode: ApiResponseCode.internetUnavailable,
+          statusMessage: StringConst.noInternetConnection);
+    }
     params = removeNullKeyValue(params);
-    var response = await _dio.put(url,
+    return await _dio.put(url,
         data: params,
         options: Options(
             responseType: ResponseType.json,
-            contentType: Headers.jsonContentType,
-            validateStatus: (status) {
-              return status! < 500;
-            }));
-    return response;
+            contentType: Headers.jsonContentType));
   }
 
-  Future<Response> delete({String url = '', params}) async {
+  Future<Response> delete({String url = '', dynamic params}) async {
+    if (!await checkInternetConnection()) {
+      return Response(
+          requestOptions: RequestOptions(path: url),
+          statusCode: ApiResponseCode.internetUnavailable,
+          statusMessage: StringConst.noInternetConnection);
+    }
     params = removeNullKeyValue(params);
-    var response = await _dio.delete(url,
+    return await _dio.delete(url,
         data: params,
         options: Options(
             responseType: ResponseType.json,
-            contentType: Headers.jsonContentType,
-            validateStatus: (status) {
-              return status! < 500;
-            }));
-    return response;
+            contentType: Headers.jsonContentType));
   }
 }
 

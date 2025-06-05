@@ -7,8 +7,8 @@
 //     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 // import 'package:flutter/material.dart';
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'package:medibot/utils/common/global_utilities.dart';
-// import 'package:medibot/utils/widgethelper/widget_helper.dart';
+// import 'package:pingmexx/utils/common/global_utilities.dart';
+// import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
 //
 // initFirebase() async {
 //   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -128,7 +128,7 @@
 //     apiKey: 'AIzaSyAwBjw1yiZ0B9Qka1nw5Mipsg9gwMcJeZ4',
 //     appId: '1:214292332702:android:150a6ac682f74b1aeafb8f',
 //     messagingSenderId: '214292332702',
-//     projectId: 'medibot-healthcare',
+//     projectId: 'pingmexx-webaddicted',
 //   );
 //
 //   // static const FirebaseOptions ios = FirebaseOptions(

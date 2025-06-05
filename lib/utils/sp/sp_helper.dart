@@ -1,4 +1,4 @@
-import 'package:medibot/utils/common/global_utilities.dart';
+import 'package:pingmexx/utils/common/global_utilities.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SPHelper {

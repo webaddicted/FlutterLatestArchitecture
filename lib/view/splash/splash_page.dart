@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:medibot/utils/common/global_utilities.dart';
-import 'package:medibot/utils/constant/assets_const.dart';
-import 'package:medibot/utils/constant/color_const.dart';
-import 'package:medibot/utils/constant/routers_const.dart';
-import 'package:medibot/utils/sp/sp_manager.dart';
+import 'package:pingmexx/utils/common/global_utilities.dart';
+import 'package:pingmexx/utils/constant/assets_const.dart';
+import 'package:pingmexx/utils/constant/color_const.dart';
+import 'package:pingmexx/utils/constant/routers_const.dart';
+import 'package:pingmexx/utils/sp/sp_manager.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -67,7 +67,7 @@ class _SplashPageState extends State<SplashPage>
         durationSec: 5,
         click: () {
           Get.offAllNamed(isOnBoardingShow != null && isOnBoardingShow
-              ? RoutersConst.home
+              ? RoutersConst.login
               : RoutersConst.onboardPage);
           // Get.offAllNamed(RoutersConst.home);
         });

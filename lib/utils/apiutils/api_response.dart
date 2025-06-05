@@ -1,15 +1,18 @@
-import 'package:medibot/utils/apiutils/api_base_helper.dart';
-import 'package:medibot/utils/constant/string_const.dart';
+import 'dart:convert';
+
+import 'package:pingmexx/utils/apiutils/api_base_helper.dart';
+import 'package:pingmexx/utils/constant/string_const.dart';
 import 'package:dio/dio.dart';
 
 class ApiResponse<T> {
   ApiStatus? status;
   T? data;
   String? message;
+  int? statusCode;
   ApiError? apiError;
 
-  ApiResponse.withoutData({this.status, this.apiError});
-  ApiResponse({this.status, this.data, this.apiError});
+  ApiResponse.withoutData({this.status,this.message,this.statusCode, this.apiError});
+  ApiResponse({this.status, this.data,this.message,this.statusCode, this.apiError});
 
   /// loading
   static ApiResponse<T> loading<T>() {
@@ -17,8 +20,8 @@ class ApiResponse<T> {
   }
 
   /// success
-  static ApiResponse success<T>(T data) {
-    return ApiResponse<T>(status: ApiStatus.success, data: data);
+  static ApiResponse success<T>(int? statusCode, String? message,T data) {
+    return ApiResponse<T>(status: ApiStatus.success,message: message,statusCode: statusCode, data: data);
   }
 
   /// error
@@ -26,31 +29,55 @@ class ApiResponse<T> {
     var apiError =
     ApiError(statusCode: errCode!, errorMessage: errMsg!, errorBody: errBdy);
     return ApiResponse.withoutData(
-        status: ApiStatus.error, apiError: apiError);
+        status: ApiStatus.error,statusCode: errCode,message: errMsg, apiError: apiError);
   }
 
   /// method wraps response in ApiResponse class
-  static ApiResponse<dynamic> returnResponse<T>(Response response, T apiResponse) {
+  static ApiResponse<T> handleResponse<T>({
+    required Response response,
+    required T Function(Map<String, dynamic> json) fromJson,
+    String? customErrorMessage,
+  }) {
     if (response.statusCode == ApiResponseCode.internetUnavailable) {
-      return ApiResponse.error(
-          errCode: response.statusCode,
-          errMsg: StringConst.noDataFound);
+      return (ApiResponse.error<T>(
+        errCode: response.statusCode,
+        errMsg: StringConst.noDataFound,
+      )) as ApiResponse<T>;
     } else if (response.statusCode == ApiResponseCode.success201 ||
-        response.statusCode == ApiResponseCode.success200 ||  response.statusCode! <= ApiResponseCode.error404) {
-      return ApiResponse.success(apiResponse);
+        response.statusCode == ApiResponseCode.success200 ||
+        response.statusCode! <= ApiResponseCode.error404) {
+      return (ApiResponse.success<T>(
+        response.statusCode??-1,
+        response.statusMessage ??"",
+        response.data == null
+            ? fromJson({"message": "No data received"})
+            : fromJson(jsonDecode(response.toString())),
+      )) as ApiResponse<T>;
     } else if (response.statusCode! >= ApiResponseCode.error400 &&
         response.statusCode! <= ApiResponseCode.error499) {
-      return ApiResponse.error(
-          errCode: response.statusCode,
-          errMsg: response.statusMessage,
-          errBdy: apiResponse,
-          data: apiResponse);
+      return (ApiResponse.error<T>(
+        errCode: response.statusCode,
+        errMsg: response.statusMessage ??
+            customErrorMessage ??
+            StringConst.somethingWentWrong,
+        errBdy: fromJson({
+          "message": response.statusMessage ??
+              customErrorMessage ??
+              StringConst.somethingWentWrong
+        }),
+        data: fromJson({
+          "message": response.statusMessage ??
+              customErrorMessage ??
+              StringConst.somethingWentWrong
+        }),
+      )) as ApiResponse<T>;
     } else {
-      return ApiResponse.error(
-          errCode: ApiResponseCode.error500,
-          errMsg: StringConst.somethingWentWrong,
-          errBdy: StringConst.somethingWentWrong,
-          data: null);
+      return (ApiResponse.error<T>(
+        errCode: ApiResponseCode.error500,
+        errMsg: StringConst.somethingWentWrong,
+        errBdy: fromJson({"message": StringConst.somethingWentWrong}),
+        data: null,
+      )) as ApiResponse<T>;
     }
   }
 
@@ -71,6 +98,6 @@ class ApiError<T> {
 }
 
 /// Enum to check Api Status
-enum ApiStatus { loading, success, error }
+enum ApiStatus { loading, success, error, noInternet }
 
 

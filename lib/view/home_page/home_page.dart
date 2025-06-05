@@ -8,31 +8,30 @@ import 'package:pingmexx/utils/common/global_utilities.dart';
 import 'package:pingmexx/utils/common/progress_button.dart';
 import 'package:pingmexx/utils/constant/assets_const.dart';
 import 'package:pingmexx/utils/constant/color_const.dart';
-import 'package:pingmexx/utils/constant/routers_const.dart';
 import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _HomePageState extends State<HomePage> {
   final formKey = GlobalKey<FormState>();
   TextEditingController mobileNoCont = TextEditingController();
   TextEditingController emailCont = TextEditingController();
   final _countryCode = '🇮🇳 (+91) ';
   LoginController loginController = Get.find();
-  bool openFromHome = false;
+  String mobileNumber = '';
   @override
   void initState() {
     super.initState();
     try {
       Map<String, dynamic> map = Get.arguments;
-      if (map.containsKey("openFromHome") &&
-          !isEmpty(map["openFromHome"].toString())) {
-        openFromHome = map["openFromHome"];
+      if (map.containsKey("mobileNumber") &&
+          !isEmpty(map["mobileNumber"].toString())) {
+        mobileNumber = map["mobileNumber"];
       }
     } catch (exp) {
       printLog(msg: exp);
@@ -87,29 +86,24 @@ class _LoginPageState extends State<LoginPage> {
                   Obx(() {
                     // print("Deep ${LoginController.to.mobileNo}");
                     var respo = loginController.callLoginRespo.value;
-                    if (respo.status != ApiStatus.success) {
-                      return apiHandler("apiName", response: respo);
-                    }else{
+                    LoginRespo? data =
+                        loginController.callLoginRespo.value.data;
+                    print("object : afa $respo");
+                    if (respo.status == null) {
                       return Container();
+                    } else {
+                      if (respo.status == ApiStatus.loading) {
+                        return CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              ColorConst.appColor),
+                        );
+                      } else if (respo.status == ApiStatus.error)
+                        return showError(respo.message);
+                      else {
+                        return showError(
+                            (data?.statusCode == "0") ? data?.message : '');
+                      }
                     }
-                    // LoginRespo? data =
-                    //     LoginController.to.callLoginRespo.value.data;
-                    // printLog(msg: "object : afats $respo");
-                    // if (respo.status == null) {
-                    //   return Container();
-                    // } else {
-                    //   if (respo.status == ApiStatus.loading) {
-                    //     return CircularProgressIndicator(
-                    //       valueColor: AlwaysStoppedAnimation<Color>(
-                    //           ColorConst.appColor),
-                    //     );
-                    //   } else if (respo.status == ApiStatus.error) {
-                    //     return showError(respo.message);
-                    //   }else {
-                    //     return showError(
-                    //         (respo.data?.statusCode == "0") ? respo.data?.message : '');
-                    //   }
-                    // }
                   }),
                   const SizedBox(height: 5),
                   Form(
@@ -199,12 +193,9 @@ class _LoginPageState extends State<LoginPage> {
             if (form?.validate() == true) {
               form?.save();
               startLoading();
-              await loginController.authLocal(emailCont.text.toString(),
+              await LoginController.to.authLocal(emailCont.text.toString(),
                   mobileNoCont.text.toString(), "", "");
               stopLoading();
-              Map<String, dynamic> map = {};
-              map["mobileNumber"] = mobileNoCont.text.toString();
-              // Get.toNamed(RoutersConst.home, arguments: map);
             }
           }
         });

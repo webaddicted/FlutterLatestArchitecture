@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:medibot/utils/constant/assets_const.dart';
-import 'package:medibot/utils/constant/color_const.dart';
+import 'package:pingmexx/utils/constant/assets_const.dart';
+import 'package:pingmexx/utils/constant/color_const.dart';
 
 ThemeData lightThemeData(BuildContext context) {
   return ThemeData(

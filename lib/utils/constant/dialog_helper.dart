@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:medibot/utils/common/global_utilities.dart';
-import 'package:medibot/utils/common/progress_button.dart';
-import 'package:medibot/utils/constant/color_const.dart';
-import 'package:medibot/utils/widgethelper/validation_helper.dart';
-import 'package:medibot/utils/widgethelper/widget_helper.dart';
+import 'package:pingmexx/utils/common/global_utilities.dart';
+import 'package:pingmexx/utils/common/progress_button.dart';
+import 'package:pingmexx/utils/constant/color_const.dart';
+import 'package:pingmexx/utils/widgethelper/validation_helper.dart';
+import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DialogHelper {
