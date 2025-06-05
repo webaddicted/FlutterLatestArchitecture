@@ -3,11 +3,14 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:logger/logger.dart';
 import 'package:medibot/utils/apiutils/api_response.dart';
+import 'package:medibot/utils/constant/color_const.dart';
 import 'package:medibot/utils/sp/sp_manager.dart';
-
+import 'package:get/get.dart';
 //  {START PAGE NAVIGATION}
 void navigationPush(BuildContext context, StatefulWidget route) {
   Navigator.push(context, MaterialPageRoute(
@@ -67,7 +70,19 @@ Color colorFromHex(String hexColor) {
   final hexCode = hexColor.replaceAll('#', '');
   return Color(int.parse('FF$hexCode', radix: 16));
 }
+// HexColor("#D26661").withOpacity(0.1);
+class HexColor extends Color {
+  static int _getColorFromHex(String hexColor) {
+    if (hexColor.isEmpty) hexColor = "323483";
+    hexColor = hexColor.toUpperCase().replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF$hexColor";
+    }
+    return int.parse(hexColor, radix: 16);
+  }
 
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+}
 logout() {
   SPManager.clearPref();
   // navigationRemoveAllPush(ctx, LoginPage());
@@ -99,3 +114,54 @@ showToast(String msg, {bool isSuccess = true}){
       fontSize: 16.0
   );
 }
+delay({dynamic durationSec, Function? click}) {
+  int sec = (durationSec! * 1000).toInt();
+  printLog(msg: "sec  :: $sec");
+  Future.delayed(Duration(milliseconds: sec), () {
+    click!();
+  });
+}
+delayTime({dynamic durationSec, Function? click}) {
+  int sec = (durationSec! * 1000).toInt();
+  Future.delayed(Duration(milliseconds: sec), () {
+    click!();
+  });
+}
+isEmpty(String? title)=> (title==null || title.isEmpty || title=="null");
+
+Future<bool> checkInternetConnection() async {
+  bool result =  await InternetConnectionChecker.instance.hasConnection;
+  return result;
+}
+
+removeSoftKeyboard(){
+  FocusManager.instance.primaryFocus?.unfocus();
+}
+back(){
+  Navigator.of(Get.context!).pop();
+}
+Widget getTxtBlackColorHtml({
+  required String? msg,
+  double fontSize = 13,
+  FontWeight fontWeight = FontWeight.normal,
+  int? maxLines,
+  TextAlign? textAlign,
+}) {
+  return HtmlWidget(
+    msg ?? "",
+    textStyle: TextStyle(
+      color: ColorConst.blackColor, // Custom text color
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+    ),
+  );
+}
+
+
+
+
+
+
+
+
+

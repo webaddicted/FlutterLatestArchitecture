@@ -1,8 +1,6 @@
 import 'dart:ui' show lerpDouble;
-import 'package:flutter/material.dart';
 
-import '../constant/color_const.dart';
-import 'package:medibot/utils/constant/color_const.dart';
+import 'package:flutter/material.dart';
 
 enum ButtonState { busy, idle }
 

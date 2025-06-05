@@ -370,57 +370,127 @@ Widget edtRectField(
       ));
 }
 
-InputDecoration inputFieldDecoration(
-    {double radius = 10,
-    Color borderColor = Colors.white,
-    String hint = "Full Name",
-    Color hintColor = Colors.grey}) {
-  return InputDecoration(
-      counterText: '',
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-      enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: borderColor),
-          borderRadius: BorderRadius.all(Radius.circular(radius))),
-      focusedBorder: OutlineInputBorder(
-          // width: 0.0 produces a thin "hairline" border
-          borderSide: BorderSide(color: borderColor),
-          borderRadius: BorderRadius.all(Radius.circular(radius))),
-      border: OutlineInputBorder(
-          borderSide: BorderSide(color: borderColor),
-          borderRadius: BorderRadius.circular(radius)),
-      hintText: hint,
-      hintStyle: TextStyle(fontWeight: FontWeight.w500, color: hintColor));
+Widget edtRectFieldBorder(
+    {TextEditingController? control,
+      String hint = '',
+      validate,
+      Icon? prefIcons,
+      Icon? suffixIcon,
+      bool isRect = true,
+      int txtLength = 32,
+      keyboardType,
+      bool isReadOnly = false,
+      bool isShowOutline = true,
+      textCapitalization = TextCapitalization.words,
+      Color borderColor = Colors.grey,
+      Color focusBorderColor = Colors.grey,
+      Color hintColor = Colors.grey,
+      Color textColor = Colors.black,
+      Color? filledColor,
+      double fontSize = 13,
+      FloatingLabelBehavior floatingLabelBehavior = FloatingLabelBehavior.never,
+      double radius = 5,
+      Function(String)? onChange,
+      Function()? onTap}) {
+  return TextFormField(
+      onTap: onTap,
+      textCapitalization: textCapitalization,
+      //TextCapitalization.words,
+      controller: control,
+      textInputAction: TextInputAction.next,
+      maxLength: txtLength,
+      validator: validate,
+      keyboardType: keyboardType,
+      onChanged: onChange,
+      //TextInputType.number,
+      style: TextStyle(fontSize: fontSize, color: textColor, fontWeight: FontWeight.w500),
+      readOnly: isReadOnly,
+      decoration: inputFieldDecoration(
+          radius: radius,
+          hint: hint,
+          hintColor: hintColor,
+          prefIcons: prefIcons,
+          suffixIcon: suffixIcon,
+          isRect: isRect,
+          fontSize:fontSize,
+          focusBorderColor: focusBorderColor,
+          filledColor: filledColor,
+          isShowOutline: isShowOutline,
+          floatingLabelBehavior: floatingLabelBehavior,
+          borderColor: borderColor));
 }
 
 Widget edtDateField1(Function() dateClick,
     {String date = "",
-    String title = "",
-    Color titleColor = Colors.black,
-    Color bgColor = Colors.white,
-    Color txtSubColor = Colors.black}) {
-  return Expanded(
-    child: InkWell(
-      onTap: dateClick,
-      child: Container(
-        padding: const EdgeInsets.only(left: 5, right: 5, bottom: 8, top: 5),
-        color: bgColor,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            getTxtColor(
-              msg: title,
-              txtColor: titleColor,
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-            ),
-            const SizedBox(height: 5),
-            getTxtColor(msg: date, txtColor: txtSubColor)
-          ],
-        ),
-      ),
-    ),
-  );
+      String title = "",
+      Color titleColor = Colors.black,
+      Color bgColor = Colors.white,
+      Color txtSubColor = Colors.black}) =>
+    Expanded(
+      child: InkWell(
+          onTap: dateClick,
+          child: Container(
+              padding:
+              const EdgeInsets.only(left: 5, right: 5, bottom: 8, top: 5),
+              color: bgColor,
+              child:
+              Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                getTxtColor(
+                  msg: title,
+                  txtColor: titleColor,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                ),
+                const SizedBox(height: 5),
+                getTxtColor(msg: date, txtColor: txtSubColor)
+              ]))),
+    );
+
+
+InputDecoration inputFieldDecoration(
+    {double radius = 5,
+      Color borderColor = Colors.grey,
+      Color focusBorderColor = Colors.grey,
+      String hint = '',
+      Color hintColor = Colors.grey,
+      Icon? prefIcons,
+      Icon? suffixIcon,
+      Color? filledColor,
+      bool isRect = true,
+      double fontSize = 13,
+      FloatingLabelBehavior floatingLabelBehavior = FloatingLabelBehavior.never,
+      bool isShowOutline = true}) {
+  InputBorder outlineBorder;
+  if (isShowOutline) {
+    outlineBorder = OutlineInputBorder(
+        borderSide: BorderSide(color: borderColor),
+        borderRadius: isRect
+            ? BorderRadius.circular(radius)
+            : BorderRadius.circular(radius));
+  } else {
+    outlineBorder = InputBorder.none;
+  }
+  return InputDecoration(
+      counterText: '',
+      border: outlineBorder,
+      prefixIcon: prefIcons,
+      suffixIcon: suffixIcon,
+      fillColor: filledColor,
+      filled: filledColor != null,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      labelText: hint,
+      contentPadding:
+      const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      //     enabledBorder: OutlineInputBorder(
+      //     borderSide: BorderSide(color: borderColor),
+      //     borderRadius: BorderRadius.all(Radius.circular(radius))),
+      focusedBorder: OutlineInputBorder(
+        // width: 0.0 produces a thin "hairline" border
+          borderSide: BorderSide(color: focusBorderColor),
+          borderRadius: BorderRadius.all(Radius.circular(radius))),
+      hintText: hint,
+      hintStyle: TextStyle(fontWeight: FontWeight.w500, color: hintColor, fontSize: fontSize),
+      labelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: fontSize));
 }
 
 Widget edtDateField(Function() dateClick,

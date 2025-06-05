@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:medibot/utils/common/global_utilities.dart';
 import 'package:medibot/utils/constant/assets_const.dart';
 import 'package:medibot/utils/constant/color_const.dart';
 import 'package:medibot/utils/constant/routers_const.dart';
+import 'package:medibot/utils/sp/sp_manager.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -32,7 +34,7 @@ class _SplashPageState extends State<SplashPage>
     setState(() {
       _visible = !_visible;
     });
-    _startTime();
+    startTime();
   }
 
   @override
@@ -59,10 +61,16 @@ class _SplashPageState extends State<SplashPage>
             ]))));
   }
 
-  _startTime() async {
-    Future.delayed(const Duration(seconds: 4), () {
-      Get.offAllNamed(RoutersConst.login);
-    });
+  startTime() async {
+    var isOnBoardingShow = await SPManager.getOnboarding();
+    delayTime(
+        durationSec: 5,
+        click: () {
+          Get.offAllNamed(isOnBoardingShow != null && isOnBoardingShow
+              ? RoutersConst.home
+              : RoutersConst.onboardPage);
+          // Get.offAllNamed(RoutersConst.home);
+        });
   }
 
   @override

@@ -18,7 +18,8 @@ class StringConst {
   static String prefAddress = "PREF_ADDRESS";
   static String prefPassword = "PREF_PASSWORD";
   static String prefImage = "PREF_IMAGE";
-
+  static String prefTheme = "isDarkTheme";
+  static String isOnBoardingShow = 'is_on_boarding_show';
   static var rupeeSymbol = '\u20B9';
 
   static var tearmsForService = 'Terms for Services';

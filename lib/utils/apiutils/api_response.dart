@@ -36,7 +36,7 @@ class ApiResponse<T> {
           errCode: response.statusCode,
           errMsg: StringConst.noDataFound);
     } else if (response.statusCode == ApiResponseCode.success201 ||
-        response.statusCode == ApiResponseCode.success200) {
+        response.statusCode == ApiResponseCode.success200 ||  response.statusCode! <= ApiResponseCode.error404) {
       return ApiResponse.success(apiResponse);
     } else if (response.statusCode! >= ApiResponseCode.error400 &&
         response.statusCode! <= ApiResponseCode.error499) {
@@ -58,6 +58,7 @@ class ApiResponse<T> {
   String toString() {
     return "Status : $status \n Message : $message \n Data : $data";
   }
+
 }
 
 /// Error class to store Api Error Response
@@ -71,4 +72,5 @@ class ApiError<T> {
 
 /// Enum to check Api Status
 enum ApiStatus { loading, success, error }
+
 

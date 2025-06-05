@@ -1,11 +1,25 @@
 import 'dart:convert';
 
 import 'package:medibot/data/bean/user/update_profile_req.dart';
-import 'package:medibot/utils/common/global_utilities.dart';
 import 'package:medibot/utils/constant/string_const.dart';
 import 'package:medibot/utils/sp/sp_helper.dart';
 
 class SPManager {
+  static setTheme(bool isDark) {
+    SPHelper.setPreference(StringConst.prefTheme, isDark);
+  }
+
+  static bool getTheme() {
+    return SPHelper.getPreference(StringConst.prefTheme, false) ?? false;
+  }
+  static Future<void> setOnboarding<T>(bool isOnBoardingShow) async {
+    await SPHelper.setPreference(StringConst.isOnBoardingShow, isOnBoardingShow);
+  }
+
+  static bool? getOnboarding() {
+    var spValue = SPHelper.getPreference(StringConst.isOnBoardingShow, false);
+    return spValue;
+  }
   static void setUserInfo<T>(UpdateProfileReq user) async {
     SPHelper.setPreference(
         StringConst.prefCustomerId, user.customerId.toString());
