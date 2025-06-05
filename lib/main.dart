@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:pingmexx/utils/common/app_theme.dart';
+import 'package:pingmexx/utils/common/firebase_utility.dart';
 import 'package:pingmexx/utils/constant/routers_const.dart';
 import 'package:pingmexx/utils/constant/routes.dart';
 import 'package:pingmexx/utils/constant/string_const.dart';
@@ -22,9 +23,9 @@ _initLibrary() async {
   await SPHelper.init();
   await dotenv.load();
   var apiKey = dotenv.env['apiKey']??"";
-  if(defaultTargetPlatform==TargetPlatform.android) {
-    // await initFirebase();
-  }
+  // if(defaultTargetPlatform==TargetPlatform.android) {
+    await initFirebase();
+  // }
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
