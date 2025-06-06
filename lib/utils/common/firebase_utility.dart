@@ -11,7 +11,6 @@ import 'package:pingmexx/utils/common/global_utilities.dart';
 import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
 
 initFirebase() async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     // Handle the notification here
