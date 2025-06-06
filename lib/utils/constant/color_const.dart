@@ -1,4 +1,4 @@
-import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
+import 'package:pingmexx/utils/common/global_utilities.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

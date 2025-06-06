@@ -1,19 +1,75 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pingmexx/utils/common/global_utilities.dart';
 import 'package:pingmexx/utils/common/progress_button.dart';
 import 'package:pingmexx/utils/constant/color_const.dart';
 import 'package:pingmexx/utils/widgethelper/validation_helper.dart';
 import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
-import 'package:permission_handler/permission_handler.dart';
-
 class DialogHelper {
   static var permissionSettingMsg =
       "This app may not work correctly without the requested permissions.\nOpen the app settings screen to modify app permissions";
+// Dialog Widgets
+//   static void showCustomDialog(
+//       String message,
+//       Function isGranted, {
+//         String title = StringConst.appName,
+//         String okBtn = "Yes",
+//         String cancelBtn = "Cancel",
+//       }) {
+//     showDialog<bool>(
+//       context: Get.context!,
+//       builder: (_) => AlertDialog(
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+//         content: getTxt(
+//           msg: message,
+//           fontSize: 17,
+//           color: ColorConst.blackColor,
+//         ),
+//         title: getTxt(
+//           msg: title,
+//           fontSize: 18,
+//           fontWeight: FontWeight.bold,
+//           color: Colors.black,
+//         ),
+//         actions: <Widget>[
+//           TextButton(
+//             child: getTxt(msg: okBtn, fontSize: 17, color: Colors.black),
+//             onPressed: () => isGranted(true),
+//           ),
+//           TextButton(
+//             child: getTxt(msg: cancelBtn, fontSize: 17, color: Colors.black),
+//             onPressed: () => isGranted(false),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
 
-  static showCustomDialogHtml(Function isGranted,
+// Loading Widgets
+  static Dialog showLoadingDialog({BuildContext? ctx}) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      child: SizedBox(
+        height: 150,
+        width: 130,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 20),
+            getTxt(
+              msg: "Loading...",
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  static Future<void> showCustomDialogHtml(Function isGranted,
       {required String title,
       required String message,
       String okBtn = "ok",
@@ -46,7 +102,7 @@ class DialogHelper {
         });
   }
 
-  static showCustomDialog(Function isGranted,
+  static Future<void> showCustomDialog(Function isGranted,
       {required String title,
       required String message,
       String okBtn = "ok",
@@ -79,7 +135,7 @@ class DialogHelper {
         });
   }
 
-  static showPermissionSettingDialog(Function isOpenSetting,
+  static Future<void> showPermissionSettingDialog(Function isOpenSetting,
       {String title = "Permission Required",
       String message = "",
       String okBtn = "Go to Settings",
@@ -114,7 +170,7 @@ class DialogHelper {
         });
   }
 
-  static listBottomSheet(
+  static void listBottomSheet(
       String title, List<String> list, String selectedValue, Function click) {
     showModalBottomSheet(
         context: Get.context!,
@@ -164,7 +220,7 @@ class DialogHelper {
         });
   }
 
-  static selectMedicineBottomSheetCustom(String title, List<String> list,
+  static void selectMedicineBottomSheetCustom(String title, List<String> list,
       Function(String selectedValue, int selectedIndex, int count) onTap,
       {String hint = "Times in a day",
       String? value,

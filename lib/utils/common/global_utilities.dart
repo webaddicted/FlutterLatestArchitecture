@@ -4,13 +4,16 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:logger/logger.dart';
 import 'package:pingmexx/utils/apiutils/api_response.dart';
 import 'package:pingmexx/utils/constant/color_const.dart';
+import 'package:pingmexx/utils/constant/dialog_helper.dart';
+import 'package:pingmexx/utils/constant/routers_const.dart';
+import 'package:pingmexx/utils/constant/string_const.dart';
 import 'package:pingmexx/utils/sp/sp_manager.dart';
-import 'package:get/get.dart';
+
 //  {START PAGE NAVIGATION}
 void navigationPush(BuildContext context, StatefulWidget route) {
   Navigator.push(context, MaterialPageRoute(
@@ -55,11 +58,11 @@ Future<String> deviceId() async {
   if (Platform.isAndroid) {
     AndroidDeviceInfo info = await DeviceInfoPlugin().androidInfo;
     deviceId = info.id;
-  } else if (Platform.isIOS){
+  } else if (Platform.isIOS) {
     IosDeviceInfo iosInfo = await DeviceInfoPlugin().iosInfo;
     deviceId = iosInfo.utsname.machine;
-  }else{
-    WebBrowserInfo webBrowserInfo =  await DeviceInfoPlugin().webBrowserInfo;
+  } else {
+    WebBrowserInfo webBrowserInfo = await DeviceInfoPlugin().webBrowserInfo;
     webBrowserInfo.browserName;
   }
   return deviceId;
@@ -70,6 +73,7 @@ Color colorFromHex(String hexColor) {
   final hexCode = hexColor.replaceAll('#', '');
   return Color(int.parse('FF$hexCode', radix: 16));
 }
+
 // HexColor("#D26661").withOpacity(0.1);
 class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
@@ -83,16 +87,18 @@ class HexColor extends Color {
 
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }
-logout() {
+
+void logout() {
   SPManager.clearPref();
   // navigationRemoveAllPush(ctx, LoginPage());
 }
 
 final logger = Logger();
-printLog(
+
+void printLog(
     {String tag = "",
-      required dynamic msg,
-      ApiStatus status = ApiStatus.success}) {
+    required dynamic msg,
+    ApiStatus status = ApiStatus.success}) {
   if (kDebugMode) {
     // print("$tag : $msg");
     if (status == ApiStatus.error) {
@@ -102,44 +108,30 @@ printLog(
     }
   }
 }
-showToast(String msg, {bool isSuccess = true}){
-  var color = isSuccess?Colors.green:Colors.red;
-  Fluttertoast.showToast(
-      msg: msg??"",
-      toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
-      backgroundColor: color,
-      textColor: Colors.white,
-      fontSize: 16.0
-  );
-}
-delay({dynamic durationSec, Function? click}) {
-  int sec = (durationSec! * 1000).toInt();
-  printLog(msg: "sec  :: $sec");
-  Future.delayed(Duration(milliseconds: sec), () {
-    click!();
-  });
-}
-delayTime({dynamic durationSec, Function? click}) {
+
+void delayTime({dynamic durationSec = 1, Function? click}) {
   int sec = (durationSec! * 1000).toInt();
   Future.delayed(Duration(milliseconds: sec), () {
     click!();
   });
 }
-isEmpty(String? title)=> (title==null || title.isEmpty || title=="null");
+
+bool isEmpty(String? title) =>
+    (title == null || title.isEmpty || title == "null");
 
 Future<bool> checkInternetConnection() async {
-  bool result =  await InternetConnectionChecker.instance.hasConnection;
+  bool result = await InternetConnectionChecker.instance.hasConnection;
   return result;
 }
 
-removeSoftKeyboard(){
+void removeSoftKeyboard() {
   FocusManager.instance.primaryFocus?.unfocus();
 }
-back(){
+
+void back() {
   Navigator.of(Get.context!).pop();
 }
+
 Widget getTxtBlackColorHtml({
   required String? msg,
   double fontSize = 13,
@@ -157,11 +149,16 @@ Widget getTxtBlackColorHtml({
   );
 }
 
-
-
-
-
-
-
-
-
+Future<void> onWillPop() async {
+  DialogHelper.showCustomDialog(
+      title: StringConst.appName,
+      message: "Are you sure you want to exit this app?",
+      (bool isGranted) async {
+    if (isGranted) {
+      await SPManager.clearPref();
+      Get.offAllNamed(RoutersConst.login);
+    } else {
+      Get.back();
+    }
+  });
+}
