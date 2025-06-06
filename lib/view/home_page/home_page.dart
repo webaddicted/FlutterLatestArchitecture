@@ -1,10 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pingmexx/controller/theme_controller.dart';
 import 'package:pingmexx/utils/common/global_utilities.dart';
 import 'package:pingmexx/utils/constant/color_const.dart';
 import 'package:pingmexx/utils/constant/routers_const.dart';
 import 'package:pingmexx/utils/widgethelper/dummy_data.dart';
+import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -15,6 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String selectedCategory = "All";
   List<String>? imageUrls = categoryImages["All"];
+  var isDarkTheme = false;
   @override
   void initState() {
     super.initState();
@@ -32,12 +35,10 @@ class _HomePageState extends State<HomePage> {
         }
       },
       child: Scaffold(
-          backgroundColor: const Color(0xFFEAF4F8),
           body: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // --- Top Profile & Add Icon (unchanged)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
@@ -47,24 +48,25 @@ class _HomePageState extends State<HomePage> {
                         backgroundImage: NetworkImage(logoImageUrl),
                       ),
                       const SizedBox(width: 12),
-                      const Expanded(
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Good Morning", style: TextStyle(fontSize: 14)),
-                            Text("Deepak Sharma", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            getTxtBlackColor(msg: "Good Morning", fontSize: 14),
+                            getTxtBlackColor(msg: "Deepak Sharma", fontSize: 16, fontWeight: FontWeight.bold),
                           ],
                         ),
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          isDarkTheme = !isDarkTheme;
+                          ThemeController.to.changeTheme(isDarkTheme);
+                        },
                         icon: const Icon(Icons.add_box_outlined, size: 28),
                       ),
                     ],
                   ),
                 ),
-
-                // --- Search Bar (unchanged)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
@@ -74,8 +76,10 @@ class _HomePageState extends State<HomePage> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: const TextField(
+                      style: TextStyle(fontSize: 14),
                       decoration: InputDecoration(
                         hintText: "Search Day's, Category & more",
+                        hintStyle: TextStyle(fontSize: 14),
                         border: InputBorder.none,
                         icon: Icon(Icons.search),
                       ),
@@ -245,18 +249,17 @@ class _HomePageState extends State<HomePage> {
   }
   Widget categoryChip(String label, {bool selected = false}) {
     return Container(
+      alignment: Alignment.center,
       margin: const EdgeInsets.symmetric(horizontal: 6),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: selected ? Colors.black : Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(25),
       ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: selected ? Colors.white : Colors.black,
+      child: getTxtColor(
+        msg: label,
+          txtColor: selected ? Colors.white : Colors.black,
           fontWeight: FontWeight.w500,
-        ),
       ),
     );
   }

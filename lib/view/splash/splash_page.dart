@@ -61,14 +61,13 @@ class _SplashPageState extends State<SplashPage>
             ]))));
   }
 
-  startTime() async {
-    var isOnBoardingShow = await SPManager.getOnboarding();
+  Future<void> startTime() async {
+    var isOnBoardingShow = SPManager.getOnboarding();
+    printLog(msg: "isOnBoardingShow $isOnBoardingShow");
     delayTime(
         durationSec: 5,
         click: () {
-          Get.offAllNamed(isOnBoardingShow != null && isOnBoardingShow
-              ? RoutersConst.login
-              : RoutersConst.onboardPage);
+          Get.offAllNamed(isOnBoardingShow==true ? RoutersConst.login : RoutersConst.onboardPage);
           // Get.offAllNamed(RoutersConst.home);
         });
   }

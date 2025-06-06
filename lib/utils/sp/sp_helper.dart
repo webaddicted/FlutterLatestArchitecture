@@ -20,7 +20,7 @@ class SPHelper {
         return sp?.getDouble(key) as T;
       }
     } catch (e) {
-      printLog(msg:"SP helper : $e");
+      printLog(msg:"SP helper getPreference: $key $defaultValue $e");
     }
     return defaultValue;
   }
@@ -41,7 +41,7 @@ class SPHelper {
         return sp?.setStringList(key, value);
       }
     } catch (e) {
-      printLog(msg:"SP helper : $e");
+      printLog(msg:"SP helper setPreference: $key $value $e");
     }
     return null;
   }

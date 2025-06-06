@@ -5,7 +5,7 @@ import 'package:pingmexx/utils/constant/string_const.dart';
 import 'package:pingmexx/utils/sp/sp_helper.dart';
 
 class SPManager {
-  static setTheme(bool isDark) {
+  static void setTheme(bool isDark) {
     SPHelper.setPreference(StringConst.prefTheme, isDark);
   }
 

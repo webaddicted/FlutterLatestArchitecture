@@ -11,6 +11,7 @@ import 'package:pingmexx/utils/common/global_utilities.dart';
 import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
 
 initFirebase() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     // Handle the notification here
@@ -112,22 +113,12 @@ class DefaultFirebaseOptions {
     }
   }
 
-  // static const FirebaseOptions web = FirebaseOptions(
-  //   apiKey: 'AIzaSyA-MkM1z8YGc_yJ4Z1r3LGsdfOtmknak',
-  //   appId: '1:67977657210:web:e3da4fad4b11aa4473b4c3',
-  //   messagingSenderId: '67977657210',
-  //   projectId: 'movies4u0',
-  //   authDomain: 'movies4u0.firebaseapp.com',
-  //   databaseURL: 'https://movies4u0-default-rtdb.firebaseio.com',
-  //   storageBucket: 'movies4u0.appspot.com',
-  //   measurementId: 'G-C2QWDT793Q',
-  // );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAwBjw1yiZ0B9Qka1nw5Mipsg9gwMcJeZ4',
-    appId: '1:214292332702:android:150a6ac682f74b1aeafb8f',
-    messagingSenderId: '214292332702',
-    projectId: 'pingmexx-webaddicted',
+    apiKey: 'AIzaSyCfk3iPc1YmcGC4wilRxRATAQivZBvZRSg',
+    appId: '1:798685713139:android:31a043779c53023aca1d86',
+    messagingSenderId: '798685713139',
+    projectId: 'pingmexx',
+    storageBucket: 'pingmexx.firebasestorage.app',
   );
 
   // static const FirebaseOptions ios = FirebaseOptions(
@@ -139,6 +130,16 @@ class DefaultFirebaseOptions {
   //   storageBucket: 'movies4u0.appspot.com',
   //   iosBundleId: 'com.ezeego.ezeegopartner',
   // );
+// static const FirebaseOptions web = FirebaseOptions(
+//   apiKey: 'AIzaSyA-MkM1z8YGc_yJ4Z1r3LGsdfOtmknak',
+//   appId: '1:67977657210:web:e3da4fad4b11aa4473b4c3',
+//   messagingSenderId: '67977657210',
+//   projectId: 'movies4u0',
+//   authDomain: 'movies4u0.firebaseapp.com',
+//   databaseURL: 'https://movies4u0-default-rtdb.firebaseio.com',
+//   storageBucket: 'movies4u0.appspot.com',
+//   measurementId: 'G-C2QWDT793Q',
+// );
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:pingmexx/controller/theme_controller.dart';
 import 'package:pingmexx/utils/common/app_theme.dart';
 import 'package:pingmexx/utils/common/firebase_utility.dart';
 import 'package:pingmexx/utils/constant/routers_const.dart';
@@ -32,19 +33,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get.put(AppController());
-    return GetMaterialApp(
-      title: StringConst.appName,
-      debugShowCheckedModeBanner: false,
-      defaultTransition: Transition.rightToLeft,
-      initialBinding: InitialBinding(),
-      unknownRoute:
-          GetPage(name: RoutersConst.initialRoute, page: () => SplashPage()),
-      // themeMode: ThemeMode.light,
-      darkTheme: lightThemeData(context),
-      theme: lightThemeData(context),
-      initialRoute: RoutersConst.initialRoute,
-      getPages: routes(),
-    );
+    return GetBuilder<ThemeController>(
+        init: ThemeController(),
+        builder: (controller) => GetMaterialApp(
+            builder: (BuildContext context, Widget? child) {
+              final MediaQueryData data = MediaQuery.of(context);
+              return MediaQuery(
+                data: data.copyWith(
+                  textScaleFactor:
+                  data.textScaleFactor > 1.2 ? 1.2 : data.textScaleFactor*1.05,
+                ),
+                child: child!,
+              );
+            },
+            title: StringConst.appName,
+            debugShowCheckedModeBanner: false,
+            defaultTransition: Transition.rightToLeft,
+            initialBinding: InitialBinding(),
+            theme: lightThemeData(context),
+            darkTheme: darkThemeData(context),
+            unknownRoute: GetPage(name: RoutersConst.initialRoute, page: () => const SplashPage()),
+            themeMode: controller.isDark ? ThemeMode.dark : ThemeMode.light,
+            initialRoute: RoutersConst.initialRoute,
+            getPages: routes()));
   }
 }

@@ -15,7 +15,7 @@ class ThemeController extends GetxController {
 
   void changeTheme(bool isDarks) async {
     isDark = isDarks;
-    await SPManager.setTheme(isDark);
+    SPManager.setTheme(isDark);
     Get.changeThemeMode(isDark ? ThemeMode.dark : ThemeMode.light);
     update();
   }
