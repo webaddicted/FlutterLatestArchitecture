@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pingmexx/utils/constant/assets_const.dart';
 import 'package:pingmexx/utils/constant/color_const.dart';
@@ -30,7 +29,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     _pageController.dispose();
   }
 
-  _onPageChanged(int index) {
+  void _onPageChanged(int index) {
     setState(() {
       _currentPage = index;
     });

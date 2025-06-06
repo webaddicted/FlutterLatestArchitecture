@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pingmexx/controller/login_controller.dart';
-import 'package:pingmexx/data/bean/login/login_respo.dart';
 import 'package:pingmexx/utils/apiutils/api_response.dart';
 import 'package:pingmexx/utils/common/global_utilities.dart';
 import 'package:pingmexx/utils/common/progress_button.dart';

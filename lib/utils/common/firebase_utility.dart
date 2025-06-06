@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,7 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pingmexx/utils/common/global_utilities.dart';
 import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
 
-initFirebase() async {
+Future<void> initFirebase() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -63,7 +62,7 @@ initFirebase() async {
   getFcmToken();
 }
 
-getFcmToken() async {
+Future<String?>? getFcmToken() async {
   String? token = "";
   try {
     token = await FirebaseMessaging.instance.getToken();
@@ -74,7 +73,7 @@ getFcmToken() async {
   return token;
 }
 
-logFcmEvent(String eventName, Map<String, Object>? param) {
+void logFcmEvent(String eventName, Map<String, Object>? param) {
   FirebaseAnalytics.instance.logEvent(
     name: 'event_name',
     parameters: param,

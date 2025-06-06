@@ -321,7 +321,7 @@ class DialogHelper {
                 btnProgress("Ok", bgColor: ColorConst.appColor,
                     onTap: (startLoading, stopLoading, btnState) async {
                   if (btnState == ButtonState.idle) {
-                    final form = bottomSheetFormKey?.currentState;
+                    final form = bottomSheetFormKey.currentState;
                     if (selectedValue != "Custom") {
                       onTap(selectedValue!, selectedIndex, selectedIndex + 1);
                     } else if (form?.validate() == true) {

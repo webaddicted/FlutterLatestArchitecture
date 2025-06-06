@@ -25,12 +25,12 @@ class LoginUserBean {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['image'] = this.image;
-    data['password'] = this.password;
-    data['dob'] = this.dob;
-    data['name'] = this.name;
-    data['emailId'] = this.emailId;
-    data['mobileNo'] = this.mobileNo;
+    data['image'] = image;
+    data['password'] = password;
+    data['dob'] = dob;
+    data['name'] = name;
+    data['emailId'] = emailId;
+    data['mobileNo'] = mobileNo;
     return data;
   }
 }

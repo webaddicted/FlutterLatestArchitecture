@@ -35,14 +35,14 @@ class SPManager {
   }
   static Future<UpdateProfileReq> getUserInfo<T>() async {
     var customerId =
-        await SPHelper.getPreference(StringConst.prefCustomerId, "");
-    var name = await SPHelper.getPreference(StringConst.prefName, "");
-    var email = await SPHelper.getPreference(StringConst.prefEmail, "");
-    var dob = await SPHelper.getPreference(StringConst.prefDob, "");
-    var mobile = await SPHelper.getPreference(StringConst.prefMobile, "");
-    var address = await SPHelper.getPreference(StringConst.prefAddress, "");
-    var password = await SPHelper.getPreference(StringConst.prefPassword, "");
-    var image = await SPHelper.getPreference(StringConst.prefImage, "");
+        SPHelper.getPreference(StringConst.prefCustomerId, "");
+    var name = SPHelper.getPreference(StringConst.prefName, "");
+    var email = SPHelper.getPreference(StringConst.prefEmail, "");
+    var dob = SPHelper.getPreference(StringConst.prefDob, "");
+    var mobile = SPHelper.getPreference(StringConst.prefMobile, "");
+    var address = SPHelper.getPreference(StringConst.prefAddress, "");
+    var password = SPHelper.getPreference(StringConst.prefPassword, "");
+    var image = SPHelper.getPreference(StringConst.prefImage, "");
 
     var userInfo = UpdateProfileReq(
         customerId: customerId,
@@ -59,7 +59,7 @@ class SPManager {
 
   static Future<String?> getCustomerId<T>() async {
     var spValue =
-        await SPHelper.getPreference(StringConst.prefCustomerId, "");
+        SPHelper.getPreference(StringConst.prefCustomerId, "");
     return spValue;
   }
 
@@ -69,7 +69,7 @@ class SPManager {
 
   static Future<String?> getAccessToken<T>() async {
     var spValue =
-        await SPHelper.getPreference(StringConst.prefAccessToken, "");
+        SPHelper.getPreference(StringConst.prefAccessToken, "");
     return spValue;
   }
 

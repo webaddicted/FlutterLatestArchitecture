@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -20,7 +19,7 @@ Future<void> main() async {
   runApp(const MyApp());
 
 }
-_initLibrary() async {
+Future<void> _initLibrary() async {
   await SPHelper.init();
   await dotenv.load();
   var apiKey = dotenv.env['apiKey']??"";
@@ -40,8 +39,7 @@ class MyApp extends StatelessWidget {
               final MediaQueryData data = MediaQuery.of(context);
               return MediaQuery(
                 data: data.copyWith(
-                  textScaleFactor:
-                  data.textScaleFactor > 1.2 ? 1.2 : data.textScaleFactor*1.05,
+                  textScaler: TextScaler.linear(data.textScaleFactor > 1.2 ? 1.2 : data.textScaleFactor*1.05),
                 ),
                 child: child!,
               );

@@ -5,7 +5,6 @@ import 'package:pingmexx/data/bean/login/login_req.dart';
 import 'package:pingmexx/data/bean/login/login_respo.dart';
 import 'package:pingmexx/utils/apiutils/api_base_helper.dart';
 import 'package:pingmexx/utils/apiutils/api_response.dart';
-import 'package:pingmexx/utils/common/global_utilities.dart';
 import 'package:pingmexx/utils/constant/api_constant.dart';
 
 class LoginRepo {

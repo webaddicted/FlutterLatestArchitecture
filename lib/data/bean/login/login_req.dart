@@ -1,5 +1,6 @@
 /// device_id : "74533257c68e1ba1"
 /// locale : "en"
+library;
 
 class LoginReq {
   String? email;

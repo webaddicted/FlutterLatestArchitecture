@@ -1,5 +1,4 @@
 import 'package:pingmexx/utils/common/global_utilities.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ColorConst {

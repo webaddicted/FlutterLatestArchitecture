@@ -26,7 +26,7 @@ class StringConst {
 
   static var error = 'Error';
 
-  static var inviteTitle = appName+"\nRefer and Earn";
+  static var inviteTitle = "$appName\nRefer and Earn";
   static var referDesc = 'Invite and earn 50 point\n\nhttps://play.google.com/store/apps/details?id=com.microprixs.ezeerides';
 
 //  {END TITLE}

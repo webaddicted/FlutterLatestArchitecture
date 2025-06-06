@@ -1,15 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:pingmexx/controller/theme_controller.dart';
 import 'package:pingmexx/utils/common/global_utilities.dart';
-import 'package:pingmexx/utils/constant/color_const.dart';
-import 'package:pingmexx/utils/constant/routers_const.dart';
 import 'package:pingmexx/utils/widgethelper/dummy_data.dart';
 import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
 
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   State<HomePage> createState() => _HomePageState();
 }

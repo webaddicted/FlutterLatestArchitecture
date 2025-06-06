@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SPHelper {
   static SharedPreferences? sp;
-  static init() async {
+  static Future<void> init() async {
     sp ??= await SharedPreferences.getInstance();
   }
   static T? getPreference<T>(String key, T defaultValue) {

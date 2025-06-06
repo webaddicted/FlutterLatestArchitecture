@@ -3,6 +3,7 @@
 /// customer_id : 4
 /// customer_type : "already"
 /// otp : 802549
+library;
 
 class LoginRespo {
   String? statusCode;

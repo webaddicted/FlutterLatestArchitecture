@@ -5,7 +5,6 @@ import 'package:pingmexx/utils/constant/color_const.dart';
 ThemeData lightThemeData(BuildContext context) {
   return ThemeData(
     primaryColor: ColorConst.appColor,
-    indicatorColor: Colors.white,
     splashColor: Colors.white24,
     splashFactory: InkRipple.splashFactory,
     fontFamily: AssetsConst.poppinsFonts,
@@ -30,7 +29,6 @@ ThemeData darkThemeData(BuildContext context) {
   return ThemeData(
     scaffoldBackgroundColor: Colors.grey.shade900,
     primaryColor: ColorConst.appColor,
-    indicatorColor: Colors.white,
     splashColor: Colors.white24,
     splashFactory: InkRipple.splashFactory,
     fontFamily: AssetsConst.poppinsFonts,
@@ -40,6 +38,6 @@ ThemeData darkThemeData(BuildContext context) {
     visualDensity: VisualDensity.adaptivePlatformDensity,
     colorScheme: const ColorScheme.dark()
         .copyWith(surface: Colors.black)
-        .copyWith(error: ColorConst.redColor),
+        .copyWith(error: ColorConst.redColor), tabBarTheme: TabBarThemeData(indicatorColor: Colors.white),
   );
 }

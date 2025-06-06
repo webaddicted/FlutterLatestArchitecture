@@ -111,7 +111,7 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
     _controller.reverse();
   }
 
-  lerpWidth(a, b, t) {
+  dynamic lerpWidth(a, b, t) {
     if (a == 0.0 || b == 0.0) {
       return null;
     } else {
@@ -148,7 +148,7 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
       child: ElevatedButton(
         key: _buttonKey,
         style: ButtonStyle(
-          shape: MaterialStateProperty.all<OutlinedBorder>(
+          shape: WidgetStateProperty.all<OutlinedBorder>(
             RoundedRectangleBorder(
               side: widget.borderSide,
               borderRadius: BorderRadius.circular(
@@ -159,10 +159,10 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
               ),
             ),
           ),
-          backgroundColor: MaterialStateProperty.all(widget.color),
-          elevation: MaterialStateProperty.all<double?>(widget.elevation),
+          backgroundColor: WidgetStateProperty.all(widget.color),
+          elevation: WidgetStateProperty.all<double?>(widget.elevation),
           padding:
-          MaterialStateProperty.all<EdgeInsetsGeometry>(widget.padding),
+          WidgetStateProperty.all<EdgeInsetsGeometry>(widget.padding),
         ),
         clipBehavior: widget.clipBehavior,
         focusNode: widget.focusNode,
@@ -174,7 +174,7 @@ class _ProgressButtonState extends State<ProgressButton> with TickerProviderStat
     );
   }
 
-  getLoader() {
+  Widget getLoader() {
     return widget.loader ?? Container(
       padding: const EdgeInsets.all(10),
       width: widget.progressIndicatorSize??30,

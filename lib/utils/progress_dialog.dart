@@ -10,7 +10,7 @@ class ProgressDialog extends StatefulWidget {
   late ProgressDialogState progressDialogState;
 
   ProgressDialog(
-      {this.backgroundColor = Colors.black54,
+      {super.key, this.backgroundColor = Colors.black54,
       this.color = Colors.deepPurple,
       this.containerColor = Colors.transparent,
       this.borderRadius = 10.0,
@@ -18,11 +18,11 @@ class ProgressDialog extends StatefulWidget {
 
   @override
   createState() => progressDialogState = ProgressDialogState(
-      backgroundColor: this.backgroundColor,
-      color: this.color,
-      containerColor: this.containerColor,
-      borderRadius: this.borderRadius,
-      text: this.text);
+      backgroundColor: backgroundColor,
+      color: color,
+      containerColor: containerColor,
+      borderRadius: borderRadius,
+      text: text);
 
   void hideProgress() {
     progressDialogState.hideProgress();

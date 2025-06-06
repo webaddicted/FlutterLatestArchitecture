@@ -3,7 +3,7 @@ import 'package:pingmexx/utils/constant/color_const.dart';
 
 class SlideDots extends StatelessWidget {
   bool isActive;
-  SlideDots(this.isActive);
+  SlideDots(this.isActive, {super.key});
 
   @override
   Widget build(BuildContext context) {

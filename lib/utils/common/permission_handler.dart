@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pingmexx/utils/constant/color_const.dart';
@@ -19,7 +18,7 @@ var permissionSettingMsg =
     "This app may not work correctly without the requested permissions.\nOpen the app settings screen to modify app permissions";
 
 class PermissionHandler {
-  static requestPermission(Permission permission,
+  static Future<void> requestPermission(Permission permission,
       Function(bool? isPermissionGranted) isPermissionGranted) async {
     PermissionStatus permissionStatus = await permission.status;
     if (permissionStatus != PermissionStatus.granted) {
@@ -44,7 +43,7 @@ class PermissionHandler {
   //   Permission.sms,
   //   Permission.storage,
   // ];
-  static requestMultiplePermission(
+  static Future<void> requestMultiplePermission(
       List<Permission> multiPermission, Function isPermissionGranted) async {
     for (var element in multiPermission) {
       var status = await element.status;
@@ -330,7 +329,7 @@ class PermissionHandler {
   }
 }
 
-showPermissionSettingDialog(Function isOpenSetting,
+Future<void> showPermissionSettingDialog(Function isOpenSetting,
     {String title = "Permission Required",
     String message = "",
     String okBtn = "Go to Settings",
@@ -365,7 +364,7 @@ showPermissionSettingDialog(Function isOpenSetting,
       });
 }
 
-permissionBottomSheet(
+void permissionBottomSheet(
     String title, String subTitle, Function(bool askPermission) click,
     {String btnText = "Ok"}) {
   showModalBottomSheet(
