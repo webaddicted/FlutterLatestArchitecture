@@ -9,10 +9,10 @@ class ApiResponse<T> {
   T? data;
   String? message;
   int? statusCode;
-  ApiError? apiError;
+  T? errorData;
 
-  ApiResponse.withoutData({this.status,this.message,this.statusCode, this.apiError});
-  ApiResponse({this.status, this.data,this.message,this.statusCode, this.apiError});
+  // ApiResponse.withoutData({this.status,this.message,this.statusCode, this.errorData});
+  ApiResponse({this.status, this.data,this.message,this.statusCode, this.errorData});
 
   /// loading
   static ApiResponse<T> loading<T>() {
@@ -25,12 +25,11 @@ class ApiResponse<T> {
   }
 
   /// error
-  static ApiResponse error<T>({int? errCode, String? errMsg, T? errBdy, T? data}) {
-    var apiError =
-    ApiError(statusCode: errCode!, errorMessage: errMsg!, errorBody: errBdy);
-    return ApiResponse.withoutData(
-        status: ApiStatus.error,statusCode: errCode,message: errMsg, apiError: apiError);
+  static ApiResponse error<T>({int? statusCode, String? message, T? errBdy, T? data}) {
+    return ApiResponse<T>(
+        status: ApiStatus.error,statusCode: statusCode,message: message,data: data, errorData: errBdy);
   }
+
 
   /// method wraps response in ApiResponse class
   static ApiResponse<T> handleResponse<T>({
@@ -40,8 +39,10 @@ class ApiResponse<T> {
   }) {
     if (response.statusCode == ApiResponseCode.internetUnavailable) {
       return (ApiResponse.error<T>(
-        errCode: response.statusCode,
-        errMsg: StringConst.noDataFound,
+        statusCode: response.statusCode,
+        message: StringConst.noInternetConnection,
+        errBdy: fromJson({"message": StringConst.noInternetConnection}),
+        data: fromJson({"message": StringConst.noInternetConnection}),
       )) as ApiResponse<T>;
     } else if (response.statusCode == ApiResponseCode.success201 ||
         response.statusCode == ApiResponseCode.success200 ||
@@ -56,16 +57,16 @@ class ApiResponse<T> {
     } else if (response.statusCode! >= ApiResponseCode.error400 &&
         response.statusCode! <= ApiResponseCode.error499) {
       return (ApiResponse.error<T>(
-        errCode: response.statusCode,
-        errMsg: response.statusMessage ??
+        statusCode: response.statusCode,
+        message: response.statusMessage ??
             customErrorMessage ??
             StringConst.somethingWentWrong,
-        errBdy: fromJson({
+        errBdy: response.data??fromJson({
           "message": response.statusMessage ??
               customErrorMessage ??
               StringConst.somethingWentWrong
         }),
-        data: fromJson({
+        data: response.data??fromJson({
           "message": response.statusMessage ??
               customErrorMessage ??
               StringConst.somethingWentWrong
@@ -73,10 +74,10 @@ class ApiResponse<T> {
       )) as ApiResponse<T>;
     } else {
       return (ApiResponse.error<T>(
-        errCode: ApiResponseCode.error500,
-        errMsg: StringConst.somethingWentWrong,
-        errBdy: fromJson({"message": StringConst.somethingWentWrong}),
-        data: null,
+        statusCode: ApiResponseCode.error500,
+        message: StringConst.somethingWentWrong,
+        errBdy: response.statusMessage??response.data??fromJson({"message": StringConst.somethingWentWrong, "statusCode": response.data}),
+        data: response.data,
       )) as ApiResponse<T>;
     }
   }

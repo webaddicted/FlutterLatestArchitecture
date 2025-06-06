@@ -22,19 +22,16 @@ class LoginController extends GetxController {
 
   Future authLocal(String emailId, String mobileNo, String currentLat, String currentLong) async {
     callLoginRespo.value = ApiResponse.loading();
-    final data = await _loginRepo.fetchLogin(emailId, mobileNo, currentLat, currentLong);
-    callLoginRespo.value = data;
-    printLog(msg: "msg rrrrrrrrrrrr ${data}");
+    ApiResponse<LoginRespo?> data = await _loginRepo.fetchLogin(emailId, mobileNo, currentLat, currentLong) ;
+    callLoginRespo.value = data ;
     if (callLoginRespo.value.data?.statusCode == "1") {
       customerId = callLoginRespo.value.data!.customerId.toString();
-      // Get.toNamed(RoutersConst.otp, arguments: [emailId, mobileNo]);
     } else {
       getSnackbar(
           title: StringConst.error,
-          subTitle: callLoginRespo.value.status.toString()+callLoginRespo.value.statusCode.toString(),
+          subTitle: callLoginRespo.value.status.toString()+callLoginRespo.value.message.toString(),
           isSuccess: false);
     }
-    // print("LoginRespo : ${callLoginRespo}");
     return data;
   }
 }

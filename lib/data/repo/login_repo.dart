@@ -5,6 +5,7 @@ import 'package:pingmexx/data/bean/login/login_req.dart';
 import 'package:pingmexx/data/bean/login/login_respo.dart';
 import 'package:pingmexx/utils/apiutils/api_base_helper.dart';
 import 'package:pingmexx/utils/apiutils/api_response.dart';
+import 'package:pingmexx/utils/common/global_utilities.dart';
 import 'package:pingmexx/utils/constant/api_constant.dart';
 
 class LoginRepo {
@@ -29,18 +30,17 @@ class LoginRepo {
           longitude: currentLong);
       final response = await apiHelper.post(
           url: ApiConstant.customerLogin, params: req.toJson());
-
       return ApiResponse.handleResponse<LoginRespo>(
         response: response,
         fromJson: (json) => LoginRespo.fromJson(json),
       );
     } catch (e) {
       var error = e.toString();
-      if(ApiConstant.isDebug){
+      if (ApiConstant.isDebug) {
         error = "${ApiConstant.customerLogin}$error";
       }
       return ApiResponse<LoginRespo>(
-          status: ApiStatus.error,statusCode:-1,message: error);
+          status: ApiStatus.error, statusCode: -1, message: error);
     }
   }
 }

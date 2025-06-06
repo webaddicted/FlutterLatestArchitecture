@@ -94,7 +94,7 @@ printLog(
       required dynamic msg,
       ApiStatus status = ApiStatus.success}) {
   if (kDebugMode) {
-    print("$tag : $msg");
+    // print("$tag : $msg");
     if (status == ApiStatus.error) {
       logger.e("$tag : $msg");
     } else {

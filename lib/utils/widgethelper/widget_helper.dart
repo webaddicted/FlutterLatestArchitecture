@@ -835,7 +835,7 @@ Widget apiHandler<T>(String apiName,
     Widget? loading,
     Widget? error,
     String? errorMsg}) {
-  printLog(msg: "apiHandler response : $response");
+  // printLog(msg: "apiHandler response : $response");
   if (response?.status == null) {
     return Container();
   }
@@ -855,7 +855,7 @@ Widget apiHandler<T>(String apiName,
       }
       return Center(
         child: getTxtColor(
-            msg: "$errorApiName${response?.apiError?.errorMessage}${response?.message}",
+            msg: "$errorApiName${response?.message}${response?.message}",
             txtColor: ColorConst.redColor,
           textAlign: TextAlign.center,
         ),
