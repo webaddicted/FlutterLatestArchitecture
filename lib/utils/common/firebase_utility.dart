@@ -83,9 +83,9 @@ logFcmEvent(String eventName, Map<String, Object>? param) {
 
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
-    // if (kIsWeb) {
-    //   return web;
-    // }
+    if (kIsWeb) {
+      return web;
+    }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
@@ -130,16 +130,16 @@ class DefaultFirebaseOptions {
   //   storageBucket: 'movies4u0.appspot.com',
   //   iosBundleId: 'com.ezeego.ezeegopartner',
   // );
-// static const FirebaseOptions web = FirebaseOptions(
-//   apiKey: 'AIzaSyA-MkM1z8YGc_yJ4Z1r3LGsdfOtmknak',
-//   appId: '1:67977657210:web:e3da4fad4b11aa4473b4c3',
-//   messagingSenderId: '67977657210',
-//   projectId: 'movies4u0',
-//   authDomain: 'movies4u0.firebaseapp.com',
-//   databaseURL: 'https://movies4u0-default-rtdb.firebaseio.com',
-//   storageBucket: 'movies4u0.appspot.com',
-//   measurementId: 'G-C2QWDT793Q',
-// );
+static const FirebaseOptions web = FirebaseOptions(
+    apiKey: "AIzaSyBe2BuCGdIDWMWBd7eLeq_mqfU6FmVL5MA",
+    authDomain: "pingmexx.firebaseapp.com",
+    databaseURL: "https://pingmexx-default-rtdb.firebaseio.com",
+    projectId: "pingmexx",
+    storageBucket: "pingmexx.firebasestorage.app",
+    messagingSenderId: "798685713139",
+    appId: "1:798685713139:web:a5fd7483073d3c1dca1d86",
+    measurementId: "G-R1BY6CD4S0"
+);
 }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
