@@ -204,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
               stopLoading();
               Map<String, dynamic> map = {};
               map["mobileNumber"] = mobileNoCont.text.toString();
-              // Get.toNamed(RoutersConst.home, arguments: map);
+              Get.toNamed(RoutersConst.home, arguments: map);
             }
           }
         });

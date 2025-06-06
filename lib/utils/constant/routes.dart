@@ -9,6 +9,6 @@ List<GetPage> routes() => [
       GetPage(name: RoutersConst.initialRoute, page: () => const SplashPage()),
       GetPage(name: RoutersConst.onboardPage, page: () => OnboardingPage()),
       GetPage(name: RoutersConst.login, page: () => LoginPage()),
-      // GetPage(name: RoutersConst.home, page: () => HomePage()),
+      GetPage(name: RoutersConst.home, page: () => HomePage()),
       // GetPage(name: RoutersConst.otp, page: () => PinView(submit: submit, count: count)),
     ];

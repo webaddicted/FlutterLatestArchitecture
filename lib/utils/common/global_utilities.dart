@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -155,10 +156,9 @@ Future<void> onWillPop() async {
       message: "Are you sure you want to exit this app?",
       (bool isGranted) async {
     if (isGranted) {
-      await SPManager.clearPref();
-      Get.offAllNamed(RoutersConst.login);
+      SystemNavigator.pop();
     } else {
-      Get.back();
+      back();
     }
   });
 }

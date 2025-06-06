@@ -1,203 +1,265 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:pingmexx/controller/login_controller.dart';
-import 'package:pingmexx/data/bean/login/login_respo.dart';
-import 'package:pingmexx/utils/apiutils/api_response.dart';
 import 'package:pingmexx/utils/common/global_utilities.dart';
-import 'package:pingmexx/utils/common/progress_button.dart';
-import 'package:pingmexx/utils/constant/assets_const.dart';
 import 'package:pingmexx/utils/constant/color_const.dart';
-import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
+import 'package:pingmexx/utils/constant/routers_const.dart';
+import 'package:pingmexx/utils/widgethelper/dummy_data.dart';
+
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final formKey = GlobalKey<FormState>();
-  TextEditingController mobileNoCont = TextEditingController();
-  TextEditingController emailCont = TextEditingController();
-  final _countryCode = '🇮🇳 (+91) ';
-  LoginController loginController = Get.find();
-  String mobileNumber = '';
+  String selectedCategory = "All";
+  List<String>? imageUrls = categoryImages["All"];
   @override
   void initState() {
     super.initState();
-    try {
-      Map<String, dynamic> map = Get.arguments;
-      if (map.containsKey("mobileNumber") &&
-          !isEmpty(map["mobileNumber"].toString())) {
-        mobileNumber = map["mobileNumber"];
-      }
-    } catch (exp) {
-      printLog(msg: exp);
-    }
+    imageUrls = categoryImages[selectedCategory]!;
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _createUi());
-  }
-
-  Widget _createUi() {
-    return SingleChildScrollView(
-        child: Container(
-            margin: const EdgeInsets.only(left: 10, right: 10),
+    removeSoftKeyboard();
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          onWillPop();
+        }
+      },
+      child: Scaffold(
+          backgroundColor: const Color(0xFFEAF4F8),
+          body: SafeArea(
             child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  const SizedBox(height: 30),
-                  // Align(
-                  //   alignment: Alignment.bottomLeft,
-                  //   child:
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // --- Top Profile & Add Icon (unchanged)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
                     children: [
+                      CircleAvatar(
+                        radius: 24,
+                        backgroundImage: NetworkImage(logoImageUrl),
+                      ),
+                      const SizedBox(width: 12),
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Good Morning", style: TextStyle(fontSize: 14)),
+                            Text("Deepak Sharma", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
                       IconButton(
-                          icon: const Icon(Icons.arrow_back_ios),
-                          onPressed: () {
-                            SystemNavigator.pop();
-                          }),
+                        onPressed: () {},
+                        icon: const Icon(Icons.add_box_outlined, size: 28),
+                      ),
                     ],
                   ),
-                  SizedBox(
-                      height: 155,
-                      width: 300,
-                      child: Image.asset(
-                        AssetsConst.logoImg,
-                      )),
-                  getTxtAppColor(
-                      msg: 'Login', fontSize: 25, fontWeight: FontWeight.bold),
-                  const SizedBox(height: 10),
-                  getTxtBlackColor(
-                      msg: 'Enter mobile number for login.',
-                      textAlign: TextAlign.center,
-                      fontSize: 16),
-                  const SizedBox(height: 5),
-                  getTxtGreyColor(
-                      msg: 'We will send you one time \npassword (OTP).',
-                      textAlign: TextAlign.center,
-                      fontSize: 15),
-                  const SizedBox(height: 10),
-                  Obx(() {
-                    // print("Deep ${LoginController.to.mobileNo}");
-                    var respo = loginController.callLoginRespo.value;
-                    LoginRespo? data =
-                        loginController.callLoginRespo.value.data;
-                    print("object : afa $respo");
-                    if (respo.status == null) {
-                      return Container();
-                    } else {
-                      if (respo.status == ApiStatus.loading) {
-                        return CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              ColorConst.appColor),
-                        );
-                      } else if (respo.status == ApiStatus.error)
-                        return showError(respo.message);
-                      else {
-                        return showError(
-                            (data?.statusCode == "0") ? data?.message : '');
-                      }
-                    }
-                  }),
-                  const SizedBox(height: 5),
-                  Form(
-                      key: formKey,
-                      child: Column(children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 3.0, vertical: 3.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30.0),
-                            color: Colors.white,
-                            boxShadow: const [
-                              BoxShadow(
-                                  color: Colors.grey,
-                                  blurRadius: 3.0,
-                                  offset: Offset(1.0, 1.0))
+                ),
+
+                // --- Search Bar (unchanged)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: const TextField(
+                      decoration: InputDecoration(
+                        hintText: "Search Day's, Category & more",
+                        border: InputBorder.none,
+                        icon: Icon(Icons.search),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 40,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final category = categories[index];
+                      final isSelected = selectedCategory == category;
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedCategory = category;
+                            imageUrls = categoryImages[selectedCategory]!;
+                          });
+                        },
+                        child: categoryChip(category, selected: isSelected),
+                      );
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+                // --- PageView with images and buttons
+                Expanded(
+                  child: PageView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: imageUrls?.length,
+                    scrollBehavior: const MaterialScrollBehavior().copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.mouse,
+                        PointerDeviceKind.trackpad,
+                      },
+                    ),
+                    itemBuilder: (context, index) {
+                      String item = imageUrls![index];
+                      return InkWell(
+                        onTap: () {
+                          Map<String, dynamic> map = {};
+                          map["imgUrl"] = item;
+                         // Get.toNamed(RoutersConst.fullScreen,arguments: map);
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => FullScreen(bgImage: item)),
+                          // );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Card(
+                                  elevation: 4,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: Stack(
+                                    children: [
+                                      SizedBox(
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        child: Image.network(
+                                          item,
+                                          fit: BoxFit.cover,
+                                          loadingBuilder: (context, child, loadingProgress) {
+                                            if (loadingProgress == null) {
+                                              return child;
+                                            }
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                value: loadingProgress.expectedTotalBytes != null
+                                                    ? loadingProgress.cumulativeBytesLoaded /
+                                                    loadingProgress.expectedTotalBytes!
+                                                    : null,
+                                              ),
+                                            );
+                                          },
+                                          errorBuilder: (context, error, stackTrace) {
+                                            debugPrint('Error loading image: $error');
+                                            return const Center(
+                                              child: Text('Error loading image'),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              // Buttons row
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.edit, color: Colors.black),
+                                      onPressed: () {
+                                        Map<String, dynamic> map = {};
+                                        map["imgUrl"] = item;
+                                        // Get.toNamed(RoutersConst.fullScreen,arguments: map);
+                                      },
+                                    ),
+                                  ),
+                                  CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.whatshot, color: Colors.green),
+                                      onPressed: () {
+                                        // _imageOverlayKey.currentState?.shareImage();
+                                      },
+                                    ),
+                                  ),
+                                  CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.download, color: Colors.black),
+                                      onPressed: () {
+                                        // _imageOverlayKey.currentState?.downloadImage();
+                                      },
+                                    ),
+                                  ),
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.black,
+                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Map<String, dynamic> map = {};
+                                      map["imgUrl"] = item;
+                                      // Get.toNamed(RoutersConst.fullScreen,arguments: map);
+                                    },
+                                    child: const Text(
+                                      'Change Photo',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
-                          child: edtRectField(
-                              control: emailCont,
-                              icons: Icons.email,
-                              hint: 'Email Id',
-                              isShowOutline: false,
-                              keyboardType: TextInputType.emailAddress),
                         ),
-                        const SizedBox(height: 10),
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 3.0, vertical: 3.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30.0),
-                              color: Colors.white,
-                              boxShadow: const [
-                                BoxShadow(
-                                    color: Colors.grey,
-                                    blurRadius: 3.0,
-                                    offset: Offset(1.0, 1.0))
-                              ],
-                            ),
-                            child: TextFormField(
-                                controller: mobileNoCont,
-                                textInputAction: TextInputAction.next,
-                                // maxLines: 1,
-                                // maxLength: 10,
-                                keyboardType: TextInputType.number,
-                                // validator: ValidationHelper.validateMobile,
-                                maxLength: 10,
-                                decoration: InputDecoration(
-                                    counterText: "",
-                                    border: InputBorder.none,
-                                    // fillColor: Colors.transparent,
-                                    hintText: 'Phone Number',
-                                    contentPadding:
-                                        const EdgeInsets.only(top: 15),
-                                    prefixIcon: InkWell(
-                                        // onTap: () => showDialog(
-                                        //     context: context,
-                                        //     builder(_): _CountryCodeDialog(
-                                        //       countries: _countryBean,
-                                        //       onCellTap: countryCodeTap,
-                                        //     )),
-                                        child: SizedBox(
-                                            width: 100,
-                                            child: Center(
-                                                child: getTxtBlackColor(
-                                                    msg: _countryCode,
-                                                    fontSize: 17)))))))
-                      ])),
-                  const SizedBox(height: 40),
-                  _submitCtaButton(),
-                  const SizedBox(height: 30)
-                ])));
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+    );
+  }
+  Widget categoryChip(String label, {bool selected = false}) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: selected ? Colors.black : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: selected ? Colors.white : Colors.black,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
   }
 
-  Widget _submitCtaButton() {
-    return ProgressButton(
-        height: 40,
-        borderRadius: 8,
-        progressIndicatorSize: 40,
-        animate: true,
-        color: ColorConst.appColor,
-        width: MediaQuery.of(Get.context!).size.width * 0.45,
-        child: getTxtWhiteColor(msg: "Login", fontWeight: FontWeight.w500),
-        onTap: (startLoading, stopLoading, btnState) async {
-          if (btnState == ButtonState.idle) {
-            final form = formKey.currentState;
-            if (form?.validate() == true) {
-              form?.save();
-              startLoading();
-              await LoginController.to.authLocal(emailCont.text.toString(),
-                  mobileNoCont.text.toString(), "", "");
-              stopLoading();
-            }
-          }
-        });
-  }
 }
+
