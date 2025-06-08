@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:pingmexx/controller/theme_controller.dart';
+import 'package:pingmexx/utils/apiutils/http_overrides.dart';
 import 'package:pingmexx/utils/common/app_theme.dart';
 import 'package:pingmexx/utils/common/firebase_utility.dart';
 import 'package:pingmexx/utils/constant/routers_const.dart';
@@ -16,6 +18,7 @@ import 'package:pingmexx/view/splash/splash_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _initLibrary();
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 
 }
