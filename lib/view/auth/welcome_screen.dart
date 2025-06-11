@@ -72,7 +72,7 @@ class WelcomeScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 56,
                 child: OutlinedButton(
-                  onPressed: () => Get.toNamed(RoutersConst.login),
+                  onPressed: () => Get.toNamed(RoutersConst.register),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color(0xFF25D366),
                     side: const BorderSide(
