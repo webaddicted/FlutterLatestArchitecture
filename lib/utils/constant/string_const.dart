@@ -3,23 +3,12 @@ class StringConst {
 
 //  {START TITLE}
   static var dummyTxt = 'Something went wrong please try again later. Something went wrong please try again later. Something went wrong please try again later. Something went wrong please try again later. Something went wrong please try again later.';
-  static String prefAccessToken = "PREF_ACCESS_TOKEN";
   static bool debug = false;
   static String noDataFound = 'No Data Found';
   static String somethingWentWrong = 'Something went wrong please try again later....';
   static String success = 'Success';
   static String noInternetConnection = 'No Internet Connection';
-
-  static String prefCustomerId = "PREF_CUSTOMER_ID";
-  static String prefName = "PREF_NAME";
-  static String prefEmail = "PREF_EMAIL";
-  static String prefDob = "PREF_DOB";
-  static String prefMobile = "PREF_MOBILE";
-  static String prefAddress = "PREF_ADDRESS";
-  static String prefPassword = "PREF_PASSWORD";
-  static String prefImage = "PREF_IMAGE";
-  static String prefTheme = "isDarkTheme";
-  static String isOnBoardingShow = 'is_on_boarding_show';
+  
   static var rupeeSymbol = '\u20B9';
 
   static var tearmsForService = 'Terms for Services';

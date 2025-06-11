@@ -67,7 +67,10 @@ class _SplashPageState extends State<SplashPage>
     delayTime(
         durationSec: 5,
         click: () {
-          Get.offAllNamed(isOnBoardingShow==true ? RoutersConst.login : RoutersConst.onboardPage);
+          Map<String, dynamic> map = {};
+          map["openFromHome"] = "Deepak Sharma";
+          Get.offAllNamed(RoutersConst.welcome);
+          // Get.offAllNamed(isOnBoardingShow==true ? RoutersConst.login : RoutersConst.onboardPage, arguments: map);
           // Get.offAllNamed(RoutersConst.home);
         });
   }

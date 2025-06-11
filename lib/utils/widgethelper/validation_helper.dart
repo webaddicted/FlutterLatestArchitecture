@@ -8,12 +8,15 @@ class ValidationHelper {
     }
     return null;
   }
+  
   static String? validateName(String? value) {
     String pattern = r'(^[a-zA-Z ]*$)';
     RegExp regExp = RegExp(pattern);
     if (value?.trim().isBlank == true) {
       return "Name is Required";
-    } else if (!regExp.hasMatch(value!)) {
+    } else if (value!.trim().length < 2) {
+      return "Name must be at least 2 characters";
+    } else if (!regExp.hasMatch(value)) {
       return "Name must be a-z and A-Z";
     }
     return null;
@@ -31,6 +34,7 @@ class ValidationHelper {
     }
     return null;
   }
+  
   static String? validateZipCode(String? value) {
     String patttern = r'(^[0-9]*$)';
     RegExp regExp = RegExp(patttern);
@@ -65,10 +69,19 @@ class ValidationHelper {
       return "Email is Required";
     } else if (!regExp.hasMatch(value!)) {
       return "Invalid Email";
-    } else {
-      return null;
     }
+    return null;
   }
+  
+  static String? validateSimplePassword(String? value) {
+    if (value?.trim().isBlank == true) {
+      return "Password is required";
+    } else if (value!.length < 6) {
+      return "Password must be at least 6 characters";
+    }
+    return null;
+  }
+  
   static String? validateNormalPass(String? value) {
     if (value?.trim().isBlank == true) {
       return "Password is Required";
@@ -100,9 +113,18 @@ class ValidationHelper {
       return "Password must grater then 8 digits";
     } else if (!regExp.hasMatch(value)) {
       return "Invalid Password";
-    } else {
-      return null;
     }
+    return null;
+  }
+
+  static String? validateConfirmPassword(String? value, String? originalPassword) {
+    if (value?.trim().isBlank == true) {
+      return 'Please confirm your password';
+    }
+    if (value != originalPassword) {
+      return 'Passwords do not match';
+    }
+    return null;
   }
 
   static String? validateOtpAadhar(String? value) {
@@ -117,6 +139,7 @@ class ValidationHelper {
     }
     return null;
   }
+  
   static String? validateOtp(String? value) {
     String patttern = r'(^[0-9]*$)';
     RegExp regExp = RegExp(patttern);
@@ -129,6 +152,7 @@ class ValidationHelper {
     }
     return null;
   }
+  
   static String? validateDob(String? value) {
     if (value?.trim().isBlank == true) {
       return "DOB is Required";
@@ -136,4 +160,10 @@ class ValidationHelper {
     return null;
   }
 
+  static String? validateGender(String? value) {
+    if (value?.trim().isBlank == true) {
+      return "Gender is required";
+    }
+    return null;
+  }
 }
