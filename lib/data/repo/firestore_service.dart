@@ -122,11 +122,11 @@ class FirestoreService {
       // Get current user and receiver user details
       UserModel? currentUser = await getUser(_auth.currentUser!.uid);
       List<UserModel> receiverUsers = await searchUsersByEmail(receiverEmail);
-      
+
       if (receiverUsers.isEmpty) {
         throw Exception('User not found');
       }
-      
+      printLog(msg: "sendFriendRequest ");
       UserModel receiverUser = receiverUsers.first;
 
       FriendModel friendRequest = FriendModel(
@@ -143,6 +143,7 @@ class FirestoreService {
 
       await _getCollection(friendsCollection).doc(friendId).set(friendRequest.toJson());
     } catch (e) {
+      printLog(msg: "sendFriendRequest $e");
       throw Exception('Failed to send friend request: $e');
     }
   }
@@ -225,6 +226,34 @@ class FirestoreService {
     }
   }
 
+  static Future<List<FriendModel>> getSentFriendRequests() async {
+    try {
+      String currentUserEmail = _auth.currentUser?.email ?? '';
+      if (currentUserEmail.isEmpty) throw Exception('User not authenticated');
+
+      QuerySnapshot snapshot = await _getCollection(friendsCollection)
+          .where('status', isEqualTo: FriendStatus.pending.name)
+          .where('senderEmail', isEqualTo: currentUserEmail)
+          .get();
+
+      List<FriendModel> requests = [];
+      for (var doc in snapshot.docs) {
+        requests.add(FriendModel.fromJson(doc.data() as Map<String, dynamic>));
+      }
+      return requests;
+    } catch (e) {
+      throw Exception('Failed to get sent friend requests: $e');
+    }
+  }
+
+  static Future<void> cancelFriendRequest(String friendId) async {
+    try {
+      await _getCollection(friendsCollection).doc(friendId).delete();
+    } catch (e) {
+      throw Exception('Failed to cancel friend request: $e');
+    }
+  }
+
   // Message operations
   static Future<void> sendMessage(ChatMessageModel message) async {
     try {
@@ -259,19 +288,24 @@ class FirestoreService {
   static Stream<List<FriendModel>> getFriendsStream() {
     String currentUserEmail = _auth.currentUser?.email ?? '';
     if (currentUserEmail.isEmpty) {
+      printLog(msg: "getFriendsStream: No current user email found");
       return Stream.value([]);
     }
 
+    printLog(msg: "getFriendsStream: Starting stream for user: $currentUserEmail");
     return _getCollection(friendsCollection)
         .where('status', isEqualTo: FriendStatus.accepted.name)
         .snapshots()
         .map((snapshot) {
+      printLog(msg: "getFriendsStream: Received ${snapshot.docs.length} documents");
       List<FriendModel> friends = [];
       for (var doc in snapshot.docs) {
         FriendModel friend = FriendModel.fromJson(doc.data() as Map<String, dynamic>);
+        printLog(msg: "getFriendsStream: Processing friend: ${friend.friendId} - ${friend.senderEmail} - ${friend.receiverEmail}");
         // Only include friends where current user is sender or receiver
         if (friend.senderEmail == currentUserEmail || friend.receiverEmail == currentUserEmail) {
           friends.add(friend);
+          printLog(msg: "getFriendsStream: Added friend to list: ${friend.friendId}");
         }
       }
       
@@ -283,8 +317,22 @@ class FirestoreService {
         return b.lastMessageTime!.compareTo(a.lastMessageTime!);
       });
       
+      printLog(msg: "getFriendsStream: Returning ${friends.length} friends");
       return friends;
     });
+  }
+
+  static Future<FriendModel?> getFriendById(String friendId) async {
+    try {
+      DocumentSnapshot doc = await _getCollection(friendsCollection).doc(friendId).get();
+      if (doc.exists) {
+        return FriendModel.fromJson(doc.data() as Map<String, dynamic>);
+      }
+      return null;
+    } catch (e) {
+      printLog(msg: "getFriendById error: $e");
+      return null;
+    }
   }
 
 }

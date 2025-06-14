@@ -64,14 +64,24 @@ class _SplashPageState extends State<SplashPage>
   Future<void> startTime() async {
     var isOnBoardingShow = SPManager.getOnboarding();
     printLog(msg: "isOnBoardingShow $isOnBoardingShow");
+    
     delayTime(
         durationSec: 5,
-        click: () {
+        click: () async {
+          // Check if user is already logged in
+          bool isLoggedIn = await SPManager.isLoggedIn();
+          printLog(msg: "isLoggedIn $isLoggedIn");
+          
           Map<String, dynamic> map = {};
           map["openFromHome"] = "Deepak Sharma";
-          Get.offAllNamed(RoutersConst.welcome);
-          // Get.offAllNamed(isOnBoardingShow==true ? RoutersConst.login : RoutersConst.onboardPage, arguments: map);
-          // Get.offAllNamed(RoutersConst.home);
+          
+          if (isLoggedIn) {
+            // User is logged in, navigate to chat list
+            Get.offAllNamed(RoutersConst.home, arguments: map);
+          } else {
+            // User is not logged in, navigate to welcome page
+            Get.offAllNamed(RoutersConst.welcome, arguments: map);
+          }
         });
   }
 

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pingmexx/utils/common/global_utilities.dart';
 import '../data/repo/firestore_service.dart';
 import '../data/bean/user/user_model.dart';
 import '../data/bean/friend/friend_model.dart';
@@ -11,16 +12,20 @@ class ChatController extends GetxController {
   RxList<FriendModel> friends = <FriendModel>[].obs;
   RxList<UserModel> searchResults = <UserModel>[].obs;
   RxList<FriendModel> pendingRequests = <FriendModel>[].obs;
+  RxList<FriendModel> sentRequests = <FriendModel>[].obs;
   
   RxBool isLoading = false.obs;
   RxBool isSearching = false.obs;
   RxString searchQuery = ''.obs;
   
+  RxMap<String, FriendModel?> friendDetails = <String, FriendModel?>{}.obs;
+
   @override
   void onInit() {
     super.onInit();
     getFriends();
     getPendingRequests();
+    getSentRequests();
     
     // Listen to search query changes
     searchController.addListener(() {
@@ -118,7 +123,7 @@ class ChatController extends GetxController {
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
-      
+      getFriends();
       // Refresh pending requests
       getPendingRequests();
       
@@ -201,6 +206,47 @@ class ChatController extends GetxController {
     }
   }
 
+  void getSentRequests() async {
+    try {
+      List<FriendModel> requests = await FirestoreService.getSentFriendRequests();
+      sentRequests.value = requests;
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to load sent requests: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  void cancelFriendRequest(String friendId) async {
+    try {
+      await FirestoreService.cancelFriendRequest(friendId);
+      
+      Get.snackbar(
+        'Success',
+        'Friend request cancelled',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+      
+      // Refresh sent requests
+      getSentRequests();
+      
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to cancel friend request: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
   void clearSearch() {
     searchController.clear();
     searchResults.clear();
@@ -269,5 +315,20 @@ class ChatController extends GetxController {
 
   String generateFriendId(String email1, String email2) {
     return FirestoreService.generateFriendId(email1, email2);
+  }
+
+  void getFriendDetails(String userEmail) {
+    String currentUserEmail = FirebaseAuth.instance.currentUser?.email ?? '';
+    String friendId = generateFriendId(currentUserEmail, userEmail);
+    printLog(msg: "friendIddddd $friendId");
+    FirestoreService.getFriendById(friendId).then((friend) {
+      friendDetails[friendId] = friend;
+    });
+  }
+
+  FriendModel? getFriendDetail(String userEmail) {
+    String currentUserEmail = FirebaseAuth.instance.currentUser?.email ?? '';
+    String friendId = generateFriendId(currentUserEmail, userEmail);
+    return friendDetails[friendId];
   }
 } 

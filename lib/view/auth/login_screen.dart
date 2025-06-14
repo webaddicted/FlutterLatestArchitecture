@@ -316,7 +316,7 @@ class _LoginScreenState extends State<LoginScreen> {
           );
 
           // Navigate to main screen
-          Get.offAllNamed(RoutersConst.chatList);
+          Get.offAllNamed(RoutersConst.home);
         } else {
           // User data not found in Firestore, might be a new user
           Get.snackbar(

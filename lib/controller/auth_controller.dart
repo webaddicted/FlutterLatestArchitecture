@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pingmexx/utils/common/global_utilities.dart';
 import 'package:pingmexx/utils/constant/routers_const.dart';
 import 'package:pingmexx/utils/sp/sp_manager.dart';
 import 'package:pingmexx/utils/widgethelper/validation_helper.dart';
@@ -42,7 +43,7 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    checkAutoLogin();
+    // checkAutoLogin();
   }
 
   @override
@@ -74,9 +75,7 @@ class AuthController extends GetxController {
           UserModel? savedUser = await SPManager.getUserData();
           
           if (savedUser != null) {
-            _showWelcomeMessage(savedUser.name ?? 'User');
-            // Navigate to chat list
-            // Get.offAllNamed(RoutersConst.chatList);
+            // _showWelcomeMessage(savedUser.name ?? 'User');
           } else {
             // Saved user data not found, fetch from Firestore
             await _fetchAndSaveUserData(firebaseUser.uid);
@@ -87,26 +86,16 @@ class AuthController extends GetxController {
         }
       }
     } catch (e) {
-      print('Auto login check failed: $e');
+      printLog(msg: 'Auto login check failed: $e');
     }
   }
 
-  // Show welcome message
-  void _showWelcomeMessage(String userName) {
-    getSnackbar(
-      title: 'Welcome Back',
-      subTitle: 'Welcome back, $userName!',
-      isSuccess: true,
-    );
-  }
-
-  // Fetch user data from Firestore and save to SharedPreferences
   Future<void> _fetchAndSaveUserData(String uid) async {
     try {
       UserModel? user = await FirestoreService.getUserById(uid);
       if (user != null) {
         await SPManager.saveUserData(user);
-        Get.offAllNamed(RoutersConst.chatList);
+        Get.offAllNamed(RoutersConst.home);
       } else {
         await SPManager.clearUserData();
       }
@@ -400,7 +389,7 @@ class AuthController extends GetxController {
 
       // Clear form and navigate
       clearForm();
-      Get.offAllNamed(RoutersConst.chatList);
+      Get.offAllNamed(RoutersConst.home);
 
     } on FirebaseAuthException catch (e) {
       _showErrorMessage(_getFirebaseErrorMessage(e.code));

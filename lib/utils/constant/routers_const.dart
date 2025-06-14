@@ -5,8 +5,8 @@ class RoutersConst {
   static const register = "/register";
   static const welcome = '/welcome';
   static const home = '/home';
-  static const chatList = '/chatList';
+  static const allUser = '/allUser';
   static const friendRequests = '/friendRequests';
   static const chatDetail = '/chatDetail';
-  static const allUser = '/allUser';
+
 }

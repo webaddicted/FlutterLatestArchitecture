@@ -47,6 +47,7 @@ class FriendModel {
     lastMessageSender = json['lastMessageSender'];
   }
 
+
   Map<String, dynamic> toJson() {
     return {
       'friendId': friendId,

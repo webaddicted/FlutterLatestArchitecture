@@ -7,22 +7,23 @@ import '../../controller/chat_controller.dart';
 import '../../controller/auth_controller.dart';
 import '../../data/bean/friend/friend_model.dart';
 import '../../data/bean/user/user_model.dart';
-import 'chat_detail_screen.dart';
+import '../chat/chat_detail_screen.dart';
 import 'friend_requests_screen.dart';
 import 'all_user_screen.dart';
 
-class ChatListScreen extends StatefulWidget {
-  const ChatListScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<ChatListScreen> createState() => _ChatListScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _ChatListScreenState extends State<ChatListScreen> {
-  int _selectedIndex = 0;
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0; // Start with All Users tab
   late PageController _pageController;
   final ChatController controller = Get.put(ChatController());
   final AuthController authController = Get.put(AuthController());
+  final TextEditingController _chatSearchController = TextEditingController();
 
   // User data from SharedPreferences
   String userName = '';
@@ -32,8 +33,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _pageController = PageController(initialPage: 0); // Start with All Users tab
+    authController.checkAutoLogin();
     _loadUserData();
+
   }
 
   // Load user data from SharedPreferences
@@ -55,6 +58,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    _chatSearchController.dispose();
     super.dispose();
   }
 
@@ -68,6 +72,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       curve: Curves.easeInOut,
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -154,35 +159,35 @@ class _ChatListScreenState extends State<ChatListScreen> {
           });
         },
         children: [
-          _buildChatsTab(),
-          _buildUpdatesTab(),
           const AllUsersScreen(),
-          _buildCallsTab(),
+          _buildRequestSentTab(),
+          _buildRequestReceivedTab(),
+          _buildChatsTab(),
         ],
       ),
       bottomNavigationBar: Container(
         color: const Color(0xFF202C33),
         child: SafeArea(
-          child: Container(
+          child: SizedBox(
             height: 60,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                GestureDetector(
+                InkWell(
                   onTap: () => _onTabTapped(0),
-                  child: _buildNavItem('Chats', Icons.chat, _selectedIndex == 0),
+                  child: _buildNavItem('All User', Icons.people, _selectedIndex == 0),
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () => _onTabTapped(1),
-                  child: _buildNavItem('Updates', Icons.update, _selectedIndex == 1),
+                  child: _buildNavItem('Request Sent', Icons.person_add_outlined, _selectedIndex == 1),
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () => _onTabTapped(2),
-                  child: _buildNavItem('Communities', Icons.people, _selectedIndex == 2),
+                  child: _buildNavItem('Request Received', Icons.person_add, _selectedIndex == 2),
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () => _onTabTapped(3),
-                  child: _buildNavItem('Calls', Icons.call, _selectedIndex == 3),
+                  child: _buildNavItem('Chats', Icons.chat, _selectedIndex == 3),
                 ),
               ],
             ),
@@ -504,10 +509,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
               borderRadius: BorderRadius.circular(25),
             ),
             child: TextField(
-              controller: controller.searchController,
+              controller: _chatSearchController,
               style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
-                hintText: 'Ask Meta AI or Search',
+                hintText: 'Search chats',
                 hintStyle: TextStyle(color: Colors.grey),
                 prefixIcon: Icon(Icons.search, color: Colors.grey),
                 border: InputBorder.none,
@@ -552,12 +557,11 @@ class _ChatListScreenState extends State<ChatListScreen> {
         // Content Area
         Expanded(
           child: Obx(() {
-            // Show search results when searching
-            if (controller.searchQuery.value.isNotEmpty) {
-              return _buildSearchResults(controller);
-            }
+            // Debug: Print friends count
+            print('Friends count: ${controller.friends.length}');
+            print('Is loading: ${controller.isLoading.value}');
             
-            // Show friends list
+            // Always show friends list for chat tab
             return _buildFriendsList(controller);
           }),
         ),
@@ -598,33 +602,345 @@ class _ChatListScreenState extends State<ChatListScreen> {
     );
   }
 
-  Widget _buildCallsTab() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildRequestReceivedTab() {
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFF25D366),
+          ),
+        );
+      }
+
+      if (controller.pendingRequests.isEmpty) {
+        return const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.person_add,
+                size: 80,
+                color: Colors.grey,
+              ),
+              SizedBox(height: 16),
+              Text(
+                'No Friend Requests',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Friend requests you receive will appear here',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      }
+
+      return ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: controller.pendingRequests.length,
+        itemBuilder: (context, index) {
+          FriendModel request = controller.pendingRequests[index];
+          return _buildFriendRequestItem(request, controller);
+        },
+      );
+    });
+  }
+
+  Widget _buildFriendRequestItem(FriendModel request, ChatController controller) {
+    String senderName = request.senderName ?? 'Unknown';
+    String senderEmail = request.senderEmail ?? '';
+    String senderImage = request.senderProfileImage ?? '';
+    String timeAgo = controller.formatTime(request.requestedAt);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF2A3942),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
         children: [
-          Icon(
-            Icons.call,
-            size: 80,
-            color: Colors.grey,
+          // Profile Image
+          buildProfileImage(
+            imageUrl: senderImage,
+            radius: 25,
+            fallbackText: senderName,
+            backgroundColor: const Color(0xFF25D366),
           ),
-          SizedBox(height: 16),
-          Text(
-            'Calls',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
+          const SizedBox(width: 16),
+          
+          // User Info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  senderName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  senderEmail,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Text(
+                      'Wants to be your friend',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                      ),
+                    ),
+                    if (timeAgo.isNotEmpty) ...[
+                      const Text(
+                        ' • ',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                      Text(
+                        timeAgo,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 8),
-          Text(
-            'Your recent calls will appear here',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
+          
+          // Action Buttons
+          Column(
+            children: [
+              // Accept Button
+              SizedBox(
+                width: 80,
+                height: 32,
+                child: ElevatedButton(
+                  onPressed: () {
+                    controller.acceptFriendRequest(request.friendId!);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF25D366),
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  child: const Text(
+                    'Accept',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              
+              // Reject Button
+              SizedBox(
+                width: 80,
+                height: 32,
+                child: OutlinedButton(
+                  onPressed: () {
+                    controller.declineFriendRequest(request.friendId!);
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red, width: 1),
+                    padding: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  child: const Text(
+                    'Reject',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRequestSentTab() {
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFF25D366),
+          ),
+        );
+      }
+
+      if (controller.sentRequests.isEmpty) {
+        return const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.person_add_outlined,
+                size: 80,
+                color: Colors.grey,
+              ),
+              SizedBox(height: 16),
+              Text(
+                'No Sent Requests',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Friend requests you send will appear here',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      }
+
+      return ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: controller.sentRequests.length,
+        itemBuilder: (context, index) {
+          FriendModel request = controller.sentRequests[index];
+          return _buildSentRequestItem(request, controller);
+        },
+      );
+    });
+  }
+
+  Widget _buildSentRequestItem(FriendModel request, ChatController controller) {
+    String receiverName = request.receiverName ?? 'Unknown';
+    String receiverEmail = request.receiverEmail ?? '';
+    String receiverImage = request.receiverProfileImage ?? '';
+    String timeAgo = controller.formatTime(request.requestedAt);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF2A3942),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          // Profile Image
+          buildProfileImage(
+            imageUrl: receiverImage,
+            radius: 25,
+            fallbackText: receiverName,
+            backgroundColor: const Color(0xFF25D366),
+          ),
+          const SizedBox(width: 16),
+          
+          // User Info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  receiverName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  receiverEmail,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Text(
+                      'Request sent',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                      ),
+                    ),
+                    if (timeAgo.isNotEmpty) ...[
+                      const Text(
+                        ' • ',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                      Text(
+                        timeAgo,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
             ),
-            textAlign: TextAlign.center,
+          ),
+          
+          // Cancel Button
+          SizedBox(
+            width: 80,
+            height: 32,
+            child: OutlinedButton(
+              onPressed: () {
+                controller.cancelFriendRequest(request.friendId!);
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.red,
+                side: const BorderSide(color: Colors.red, width: 1),
+                padding: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
           ),
         ],
       ),
