@@ -989,8 +989,7 @@ class _HomeScreenState extends State<HomeScreen> {
               InkWell(
                 onTap: (){
                   String myUid = FirebaseAuth.instance.currentUser?.uid??'';
-                  Get.to(()=>UserProfileScreen(uuid: myUid));
-                  Get.toNamed(RoutersConst.profile);
+                  Get.to(() => UserProfileScreen(uuid: myUid));
                 },
                 child: buildProfileImage(
                   imageUrl: userProfileImage,
