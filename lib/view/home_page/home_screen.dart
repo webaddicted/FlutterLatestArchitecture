@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:pingmexx/data/repo/firestore_service.dart';
 import 'package:pingmexx/utils/constant/routers_const.dart';
 import 'package:pingmexx/utils/sp/sp_manager.dart';
+import 'package:pingmexx/view/profile/user_profile_screen.dart';
 import '../../controller/chat_controller.dart';
 import '../../controller/auth_controller.dart';
 import '../../data/bean/friend/friend_model.dart';
@@ -987,6 +988,8 @@ class _HomeScreenState extends State<HomeScreen> {
               // Profile Image
               InkWell(
                 onTap: (){
+                  String myUid = FirebaseAuth.instance.currentUser?.uid??'';
+                  Get.to(()=>UserProfileScreen(uuid: myUid));
                   Get.toNamed(RoutersConst.profile);
                 },
                 child: buildProfileImage(
