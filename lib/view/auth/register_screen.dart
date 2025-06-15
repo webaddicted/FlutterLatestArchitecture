@@ -362,6 +362,7 @@ class RegisterScreen extends StatelessWidget {
           keyboardType: keyboardType,
           obscureText: obscureText,
           validator: validator,
+          cursorColor: Colors.white,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: hint,

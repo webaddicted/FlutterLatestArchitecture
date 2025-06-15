@@ -221,6 +221,7 @@ Widget edtPwdField({
 }) {
   return TextFormField(
     controller: control,
+    cursorColor: Colors.white,
     decoration: InputDecoration(
       counterText: '',
       contentPadding:
@@ -260,6 +261,7 @@ Widget edtDobField1(
     required Function() click}) {
   return TextFormField(
     onTap: click,
+    cursorColor: Colors.white,
     validator: validate,
     textAlign: TextAlign.start,
     style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.white),
@@ -296,6 +298,7 @@ Widget edtDobField(
     required Function() click}) {
   return TextFormField(
     onTap: click,
+    cursorColor: Colors.white,
     validator: validate,
     decoration: InputDecoration(
       counterText: '',
@@ -339,6 +342,7 @@ Widget edtRectField(
     outlineBorder = InputBorder.none;
   }
   return TextFormField(
+      cursorColor: Colors.white,
       textCapitalization: textCapitalization,
       controller: control,
       textInputAction: TextInputAction.next,
@@ -383,6 +387,7 @@ Widget edtRectFieldBorder(
     Function()? onTap}) {
   return TextFormField(
       onTap: onTap,
+      cursorColor: Colors.white,
       textCapitalization: textCapitalization,
       controller: control,
       textInputAction: TextInputAction.next,
@@ -510,6 +515,7 @@ Widget edtDateField(Function() dateClick,
 Widget edtTimeField(TextEditingController edtController, Function() timeClick) {
   return TextFormField(
     onTap: timeClick,
+    cursorColor: Colors.white,
     decoration: InputDecoration(
       counterText: '',
       contentPadding:
@@ -531,6 +537,7 @@ Widget edtTimeField(TextEditingController edtController, Function() timeClick) {
 Widget edtRateField(TextEditingController edtController) {
   return TextFormField(
     controller: edtController,
+    cursorColor: Colors.white,
     decoration: InputDecoration(
       counterText: '',
       contentPadding:
@@ -552,6 +559,7 @@ Widget edtCommentField(TextEditingController edtController) {
   return TextFormField(
     textCapitalization: TextCapitalization.words,
     controller: edtController,
+    cursorColor: Colors.white,
     decoration: InputDecoration(
         counterText: '',
         contentPadding:
@@ -892,7 +900,7 @@ void showToast(String msg, {bool isSuccess = true}) {
       fontSize: 16.0);
 }
 
-void getSnackbar(
+void getSnackBar(
     {String? title = "", String? subTitle = "", bool isSuccess = false}) {
   try {
     Get.snackbar(title ?? "", subTitle ?? "",

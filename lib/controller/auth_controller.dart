@@ -192,7 +192,7 @@ class AuthController extends GetxController {
 
   // Show success message
   void _showSuccessMessage(String message) {
-    getSnackbar(
+    getSnackBar(
       title: 'Success',
       subTitle: message,
       isSuccess: true,
@@ -201,7 +201,7 @@ class AuthController extends GetxController {
 
   // Show error message
   void _showErrorMessage(String message) {
-    getSnackbar(
+    getSnackBar(
       title: 'Error',
       subTitle: message,
       isSuccess: false,

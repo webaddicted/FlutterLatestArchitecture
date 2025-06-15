@@ -9,6 +9,9 @@ class UserModel {
   DateTime? lastSeen;
   bool? isOnline;
   DateTime? createdAt;
+  int? spamMeReportedOtherCount; // Number of users this user has reported
+  int? spamOtherReportedMeCount; // Number of times this user has been reported
+  List<String>? fcmTokens;
   
   UserModel({
     this.uid,
@@ -21,6 +24,9 @@ class UserModel {
     this.lastSeen,
     this.isOnline,
     this.createdAt,
+    this.spamMeReportedOtherCount = 0,
+    this.spamOtherReportedMeCount = 0,
+    this.fcmTokens = const [],
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -34,6 +40,9 @@ class UserModel {
     lastSeen = json['lastSeen'] != null ? DateTime.parse(json['lastSeen']) : null;
     isOnline = json['isOnline'] ?? false;
     createdAt = json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null;
+    spamMeReportedOtherCount = json['spamMeReportedOtherCount'] ?? 0;
+    spamOtherReportedMeCount = json['spamOtherReportedMeCount'] ?? 0;
+    fcmTokens = List<String>.from(json['fcmTokens'] ?? []);
   }
 
   Map<String, dynamic> toJson() {
@@ -48,6 +57,9 @@ class UserModel {
       'lastSeen': lastSeen?.toIso8601String(),
       'isOnline': isOnline,
       'createdAt': createdAt?.toIso8601String(),
+      'spamMeReportedOtherCount': spamMeReportedOtherCount,
+      'spamOtherReportedMeCount': spamOtherReportedMeCount,
+      'fcmTokens': fcmTokens,
     };
   }
 } 

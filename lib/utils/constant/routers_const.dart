@@ -8,5 +8,10 @@ class RoutersConst {
   static const allUser = '/allUser';
   static const friendRequests = '/friendRequests';
   static const chatDetail = '/chatDetail';
+  static const profile = '/profile';
+  static const String reportedUsers = '/reportedUsers';
 
 }
+
+
+

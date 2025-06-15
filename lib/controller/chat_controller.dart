@@ -5,9 +5,14 @@ import 'package:pingmexx/utils/common/global_utilities.dart';
 import '../data/repo/firestore_service.dart';
 import '../data/bean/user/user_model.dart';
 import '../data/bean/friend/friend_model.dart';
+import '../services/notification_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../data/bean/chat/chat_message_model.dart';
+import 'package:pingmexx/utils/widgethelper/widget_helper.dart';
 
 class ChatController extends GetxController {
   final TextEditingController searchController = TextEditingController();
+  final TextEditingController messageController = TextEditingController();
   
   RxList<FriendModel> friends = <FriendModel>[].obs;
   RxList<UserModel> searchResults = <UserModel>[].obs;
@@ -19,6 +24,8 @@ class ChatController extends GetxController {
   RxString searchQuery = ''.obs;
   
   RxMap<String, FriendModel?> friendDetails = <String, FriendModel?>{}.obs;
+
+  // final NotificationService _notificationService = Get.find<NotificationService>();
 
   @override
   void onInit() {
@@ -42,6 +49,7 @@ class ChatController extends GetxController {
   @override
   void onClose() {
     searchController.dispose();
+    messageController.dispose();
     super.onClose();
   }
 
@@ -54,13 +62,7 @@ class ChatController extends GetxController {
       });
     } catch (e) {
       isLoading.value = false;
-      Get.snackbar(
-        'Error',
-        'Failed to load friends: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Failed to load friends: $e');
     }
   }
 
@@ -81,13 +83,7 @@ class ChatController extends GetxController {
       
       searchResults.value = users;
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to search users: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Failed to search users: $e');
     } finally {
       isSearching.value = false;
     }
@@ -104,37 +100,19 @@ class ChatController extends GetxController {
                           pendingRequests.any((request) => request.friendId == friendId);
       
       if (alreadyExists) {
-        Get.snackbar(
-          'Info',
-          'Friend request already sent or you are already friends',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orange,
-          colorText: Colors.white,
-        );
+        showSnackBar(Get.context!, 'Friend request already sent or you are already friends');
         return;
       }
 
       await FirestoreService.sendFriendRequest(receiverEmail);
       
-      Get.snackbar(
-        'Success',
-        'Friend request sent successfully',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Friend request sent successfully');
       getFriends();
       // Refresh pending requests
       getPendingRequests();
       
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to send friend request: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Failed to send friend request: $e');
     }
   }
 
@@ -142,26 +120,14 @@ class ChatController extends GetxController {
     try {
       await FirestoreService.acceptFriendRequest(friendId);
       
-      Get.snackbar(
-        'Success',
-        'Friend request accepted',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Friend request accepted');
       
       // Refresh both lists
       getFriends();
       getPendingRequests();
       
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to accept friend request: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Failed to accept friend request: $e');
     }
   }
 
@@ -169,25 +135,13 @@ class ChatController extends GetxController {
     try {
       await FirestoreService.declineFriendRequest(friendId);
       
-      Get.snackbar(
-        'Success',
-        'Friend request declined',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Friend request declined');
       
       // Refresh pending requests
       getPendingRequests();
       
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to decline friend request: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Failed to decline friend request: $e');
     }
   }
 
@@ -196,13 +150,7 @@ class ChatController extends GetxController {
       List<FriendModel> requests = await FirestoreService.getPendingFriendRequests();
       pendingRequests.value = requests;
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to load pending requests: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Failed to load pending requests: $e');
     }
   }
 
@@ -211,13 +159,7 @@ class ChatController extends GetxController {
       List<FriendModel> requests = await FirestoreService.getSentFriendRequests();
       sentRequests.value = requests;
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to load sent requests: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Failed to load sent requests: $e');
     }
   }
 
@@ -225,25 +167,13 @@ class ChatController extends GetxController {
     try {
       await FirestoreService.cancelFriendRequest(friendId);
       
-      Get.snackbar(
-        'Success',
-        'Friend request cancelled',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Friend request cancelled');
       
       // Refresh sent requests
       getSentRequests();
       
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to cancel friend request: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Failed to cancel friend request: $e');
     }
   }
 
@@ -302,13 +232,7 @@ class ChatController extends GetxController {
     try {
       return await FirestoreService.getAllUsers();
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to load all users: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      showSnackBar(Get.context!, 'Failed to load all users: $e');
       return [];
     }
   }
@@ -326,9 +250,96 @@ class ChatController extends GetxController {
     });
   }
 
+
   FriendModel? getFriendDetail(String userEmail) {
     String currentUserEmail = FirebaseAuth.instance.currentUser?.email ?? '';
     String friendId = generateFriendId(currentUserEmail, userEmail);
     return friendDetails[friendId];
+  }
+
+  // Get report counts for current user
+  Future<Map<String, int>> getMyReportCounts() async {
+    try {
+      String currentUserUid = FirebaseAuth.instance.currentUser?.uid ?? '';
+      if (currentUserUid.isEmpty) {
+        showSnackBar(Get.context!, 'User not authenticated');
+        throw Exception('User not authenticated');
+      }
+      return await FirestoreService.getUserReportCounts(currentUserUid);
+    } catch (e) {
+      showSnackBar(Get.context!, 'Failed to get report counts: $e');
+      return {'reportCount': 0, 'reportedCount': 0};
+    }
+  }
+
+  // Get report counts for another user
+  Future<Map<String, int>> getUserReportCounts(String? uid) async {
+    try {
+      return await FirestoreService.getUserReportCounts(uid);
+    } catch (e) {
+      showSnackBar(Get.context!, 'Failed to get user report counts: $e');
+      return {'reportCount': 0, 'reportedCount': 0};
+    }
+  }
+
+  Future<void> sendMessage(String message, String receiverEmail, String chatId) async {
+    try {
+      if (message.trim().isEmpty) return;
+
+      String? currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+      if (currentUserUid == null) {
+        showSnackBar(Get.context!, 'User not authenticated');
+        return;
+      }
+
+      // Get current user data
+      UserModel? currentUser = await FirestoreService.getUser(currentUserUid);
+      if (currentUser == null) {
+        showSnackBar(Get.context!, 'User data not found');
+        return;
+      }
+
+      // Get receiver's UID from email
+      List<UserModel> receiverUsers = await FirestoreService.searchUsersByEmail(receiverEmail);
+      if (receiverUsers.isEmpty) {
+        showSnackBar(Get.context!, 'Receiver not found');
+        return;
+      }
+      String receiverUid = receiverUsers.first.uid!;
+
+      // Create message using ChatMessageModel
+      ChatMessageModel messageModel = ChatMessageModel(
+        friendId: chatId,
+        senderEmail: currentUser.email,
+        receiverEmail: receiverEmail,
+        message: message.trim(),
+        messageType: MessageType.text,
+        isRead: false,
+        isReply: false,
+        replyToMsgDoc: null,
+        sd: false,
+        rd: false,
+        isForward: false,
+        sname: currentUser.name,
+        isPrivate: false,
+      );
+
+      // Send message using FirestoreService
+      await FirestoreService.sendMessage(messageModel);
+
+      // Send notification to receiver
+      // await _notificationService.sendNotification(
+      //   receiverUid: receiverUid,
+      //   title: 'New message from ${currentUser.name}',
+      //   body: message.trim(),
+      //   chatId: chatId,
+      // );
+
+      // Clear message input
+      messageController.clear();
+    } catch (e) {
+      printLog(msg: 'Error sending message: $e');
+      showSnackBar(Get.context!, 'Failed to send message');
+    }
   }
 } 

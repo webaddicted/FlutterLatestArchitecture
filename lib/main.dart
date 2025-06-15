@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:no_screenshot/no_screenshot.dart';
 import 'package:pingmexx/controller/theme_controller.dart';
 import 'package:pingmexx/utils/apiutils/http_overrides.dart';
 import 'package:pingmexx/utils/common/app_theme.dart';
@@ -14,13 +15,15 @@ import 'package:pingmexx/utils/constant/string_const.dart';
 import 'package:pingmexx/utils/sp/sp_helper.dart';
 import 'package:pingmexx/utils/widgethelper/initial_binding.dart';
 import 'package:pingmexx/view/splash/splash_page.dart';
+import 'services/notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+//  await Get.putAsync(() => NotificationService().init());
+  
   _initLibrary();
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
-
 }
 Future<void> _initLibrary() async {
   await SPHelper.init();
@@ -58,4 +61,14 @@ class MyApp extends StatelessWidget {
             initialRoute: RoutersConst.initialRoute,
             getPages: routes()));
   }
+}
+final _noScreenshot = NoScreenshot.instance;
+
+void enableScreenshot() async {
+  bool result = await _noScreenshot.screenshotOn();
+  debugPrint('Enable Screenshot: $result');
+}
+void disableScreenshot() async {
+  bool result = await _noScreenshot.screenshotOff();
+  debugPrint('Screenshot Off: $result');
 }

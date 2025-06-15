@@ -106,6 +106,7 @@ class _PinViewState extends State<PinView> {
             margin: widget.margin,
             child: TextField(
               enabled: widget.enabled,
+              cursorColor: Colors.white,
               controller: _controllers[index],
               obscureText: widget.obscureText,
               autofocus: widget.autoFocusFirstField ? index == 0 : false,

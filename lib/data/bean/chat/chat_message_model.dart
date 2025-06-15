@@ -9,6 +9,13 @@ class ChatMessageModel {
   bool? isRead;
   String? mediaUrl;
   String? mediaType;
+  bool? isReply;
+  String? replyToMsgDoc;
+  bool? sd;
+  bool? rd;
+  bool? isForward;
+  String? sname;
+  bool? isPrivate;
   
   ChatMessageModel({
     this.messageId,
@@ -21,6 +28,13 @@ class ChatMessageModel {
     this.isRead,
     this.mediaUrl,
     this.mediaType,
+    this.isReply,
+    this.replyToMsgDoc,
+    this.sd,
+    this.rd,
+    this.isForward,
+    this.sname,
+    this.isPrivate,
   });
 
   ChatMessageModel.fromJson(Map<String, dynamic> json) {
@@ -36,6 +50,13 @@ class ChatMessageModel {
     isRead = json['isRead'] ?? false;
     mediaUrl = json['mediaUrl'];
     mediaType = json['mediaType'];
+    isReply = json['isReply'] ?? false;
+    replyToMsgDoc = json['replyToMsgDoc'];
+    sd = json['sd'] ?? false;
+    rd = json['rd'] ?? false;
+    isForward = json['isForward'] ?? false;
+    sname = json['sname'];
+    isPrivate = json['isPrivate'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -50,6 +71,13 @@ class ChatMessageModel {
       'isRead': isRead,
       'mediaUrl': mediaUrl,
       'mediaType': mediaType,
+      'isReply': isReply,
+      'replyToMsgDoc': replyToMsgDoc,
+      'sd': sd,
+      'rd': rd,
+      'isForward': isForward,
+      'sname': sname,
+      'isPrivate': isPrivate ?? false,
     };
   }
 }

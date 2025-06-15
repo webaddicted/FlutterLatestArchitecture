@@ -247,6 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
           obscureText: obscureText,
           validator: validator,
           style: const TextStyle(color: Colors.white),
+          cursorColor: Colors.white,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: const TextStyle(color: Colors.grey),
@@ -400,6 +401,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 16),
             TextFormField(
               controller: resetEmailController,
+              cursorColor: Colors.white,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: 'Email address',

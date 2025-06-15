@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pingmexx/data/bean/friend/friend_model.dart';
 import 'package:pingmexx/utils/common/global_utilities.dart';
+import 'package:pingmexx/utils/constant/routers_const.dart';
+import 'package:pingmexx/view/profile/user_profile_screen.dart';
 
 import '../../controller/chat_controller.dart';
 import '../../data/bean/user/user_model.dart';
@@ -114,6 +116,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
               child: TextField(
                 controller: _searchController,
                 style: const TextStyle(color: Colors.white),
+                cursorColor: Colors.white,
                 decoration: const InputDecoration(
                   hintText: 'Search users...',
                   hintStyle: TextStyle(color: Colors.grey),
@@ -282,12 +285,12 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                       buttonText = 'Accept';
                       isButtonEnabled = true;
                       buttonColor = const Color(0xFF25D366);
-                      buttonColor = Colors.orange;
                     }
                     break;
                   case FriendStatus.accepted:
                     statusText = 'Friends';
                     statusColor = const Color(0xFF25D366);
+                    buttonText = 'Friends';
                     buttonColor = Colors.grey[600]!;
                     isButtonEnabled = false;
                     break;
@@ -301,7 +304,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                   case FriendStatus.declined:
                     statusText = 'Declined';
                     statusColor = Colors.grey;
-                    buttonText = 'Declined Add Again';
+                    buttonText = 'Add Again';
                     buttonColor = const Color(0xFF25D366);
                     isButtonEnabled = true;
                     break;
@@ -312,152 +315,210 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                     isButtonEnabled = true;
                 }
               }
-              return ListTile(
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                shape: RoundedRectangleBorder(
+
+              return Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFF202C33),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                tileColor: const Color(0xFF202C33),
-                leading: user.profileImage != null &&
-                        user.profileImage!.isNotEmpty
-                    ? CachedNetworkImage(
-                        imageUrl: user.profileImage!,
-                        imageBuilder: (context, imageProvider) => CircleAvatar(
-                          radius: 25,
-                          backgroundImage: imageProvider,
-                          backgroundColor: Colors.grey[600],
-                        ),
-                        placeholder: (context, url) => CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.grey[600],
-                          child: const CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.grey[600],
-                          child: Text(
-                            user.name?.substring(0, 1).toUpperCase() ?? 'U',
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      )
-                    : CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Colors.grey[600],
-                        child: Text(
-                          user.name?.substring(0, 1).toUpperCase() ?? 'U',
-                          style: const TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                title: Text(
-                  user.name ?? 'Unknown',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user.email ?? '',
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    if (user.bio != null && user.bio!.isNotEmpty)
-                      Text(
-                        user.bio!,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    const SizedBox(height: 4),
-                    if (!isEmpty(statusText))
-                      Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: statusColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                            border:
-                                Border.all(color: statusColor.withOpacity(0.3)),
-                          ),
-                          child: Text(
-                            statusText,
-                            style: TextStyle(
-                              color: statusColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                child: GestureDetector(
+                  onTap: () {
+                    // Navigate to clicked user's profile
+                    Get.to(() => UserProfileScreen(uuid: user.uid));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        // Profile Image
+                        Stack(
+                          children: [
+                            user.profileImage != null && user.profileImage!.isNotEmpty
+                                ? CachedNetworkImage(
+                                    imageUrl: user.profileImage!,
+                                    imageBuilder: (context, imageProvider) => CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage: imageProvider,
+                                      backgroundColor: Colors.grey[600],
+                                    ),
+                                    placeholder: (context, url) => CircleAvatar(
+                                      radius: 25,
+                                      backgroundColor: Colors.grey[600],
+                                      child: const CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) => CircleAvatar(
+                                      radius: 25,
+                                      backgroundColor: Colors.grey[600],
+                                      child: Text(
+                                        user.name?.substring(0, 1).toUpperCase() ?? 'U',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: Colors.grey[600],
+                                    child: Text(
+                                      user.name?.substring(0, 1).toUpperCase() ?? 'U',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                            Positioned(
+                              right: 0,
+                              bottom: 0,
+                              child: Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: user.isOnline == true
+                                      ? const Color(0xFF25D366)
+                                      : Colors.grey,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: const Color(0xFF202C33),
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
                             ),
-                          ))
-                  ],
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: user.isOnline == true
-                            ? const Color(0xFF25D366)
-                            : Colors.grey,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                            color: const Color(0xFF202C33), width: 2),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    SizedBox(
-                      width: 80,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (isButtonEnabled) {
-                            if (buttonText == 'Accept') {
-                              FriendModel? request = controller.pendingRequests
-                                  .firstWhereOrNull((request) =>
-                                      request.friendId ==
+                          ],
+                        ),
+                        const SizedBox(width: 16),
+                        // User Info
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.name ?? 'Unknown',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                user.email ?? '',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (user.bio != null && user.bio!.isNotEmpty) ...[
+                                const SizedBox(height: 4),
+                                Text(
+                                  user.bio!,
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  "Spam Reported By Me: ${user.spamMeReportedOtherCount}",
+                                  style: TextStyle(
+                                    color: statusColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Text(
+                                  "Spam Reported against Me: ${user.spamOtherReportedMeCount}",
+                                  style: TextStyle(
+                                    color: statusColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                              if (!isEmpty(statusText)) ...[
+                                const SizedBox(height: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: statusColor.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: statusColor.withOpacity(0.3),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    statusText,
+                                    style: TextStyle(
+                                      color: statusColor,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        // Action Button
+                        SizedBox(
+                          width: 90,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if(isButtonEnabled) {
+                                if (buttonText == 'Accept') {
+                                  FriendModel? request = controller
+                                      .pendingRequests
+                                      .firstWhereOrNull((request) =>
+                                  request.friendId ==
                                       controller.generateFriendId(
                                           user.email!, currentUserEmail));
-                              if (request != null) {
-                                controller
-                                    .acceptFriendRequest(request.friendId!);
+                                  if (request != null) {
+                                    controller.acceptFriendRequest(
+                                        request.friendId!);
+                                  }
+                                } else if (buttonText.contains('Add')) {
+                                  controller.sendFriendRequest(user.email!);
+                                }
                               }
-                            } else if(buttonText.contains('Add')){
-                              controller.sendFriendRequest(user.email!);
-                            }
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: buttonColor,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: buttonColor,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              minimumSize: const Size(90, 32),
+                            ),
+                            child: Text(
+                              buttonText,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
-                          minimumSize: const Size(80, 32),
                         ),
-                        child: Text(
-                          buttonText,
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                      ),
-                    )
-                  ],
+                      ],
+                    ),
+                  ),
                 ),
               );
             },

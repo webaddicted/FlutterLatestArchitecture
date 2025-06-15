@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:pingmexx/data/repo/firestore_service.dart';
 import 'package:pingmexx/utils/constant/routers_const.dart';
 import 'package:pingmexx/utils/sp/sp_manager.dart';
 import '../../controller/chat_controller.dart';
@@ -10,6 +11,7 @@ import '../../data/bean/user/user_model.dart';
 import '../chat/chat_detail_screen.dart';
 import 'friend_requests_screen.dart';
 import 'all_user_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -49,7 +51,26 @@ class _HomeScreenState extends State<HomeScreen> {
           userEmail = user.email ?? '';
           userProfileImage = user.profileImage ?? '';
         });
+        print('Loaded user data: name=$userName, email=$userEmail, image=$userProfileImage');
+      } else {
+        print('No user data found in SharedPreferences');
+        // Try to get current Firebase user
+        User? firebaseUser = FirebaseAuth.instance.currentUser;
+        if (firebaseUser != null) {
+          UserModel? user = await FirestoreService.getUserById(firebaseUser.uid);
+          if (user != null) {
+            await SPManager.saveUserData(user);
+            setState(() {
+              userName = user.name ?? '';
+              userEmail = user.email ?? '';
+              userProfileImage = user.profileImage ?? '';
+            });
+            print('Loaded user data from Firestore: name=$userName, email=$userEmail, image=$userProfileImage');
+          }
+        }
       }
+      
+
     } catch (e) {
       print('Failed to load user data: $e');
     }
@@ -455,6 +476,7 @@ class _HomeScreenState extends State<HomeScreen> {
               TextField(
                 controller: controller.searchController,
                 style: const TextStyle(color: Colors.white),
+                cursorColor: Colors.white,
                 decoration: const InputDecoration(
                   hintText: 'Enter name to search...',
                   hintStyle: TextStyle(color: Colors.grey),
@@ -511,6 +533,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: TextField(
               controller: _chatSearchController,
               style: const TextStyle(color: Colors.white),
+              cursorColor: Colors.white,
               decoration: const InputDecoration(
                 hintText: 'Search chats',
                 hintStyle: TextStyle(color: Colors.grey),
@@ -962,11 +985,16 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // Profile Image
-              buildProfileImage(
-                imageUrl: userProfileImage,
-                radius: 50,
-                fallbackText: userName,
-                backgroundColor: const Color(0xFF25D366),
+              InkWell(
+                onTap: (){
+                  Get.toNamed(RoutersConst.profile);
+                },
+                child: buildProfileImage(
+                  imageUrl: userProfileImage,
+                  radius: 50,
+                  fallbackText: userName,
+                  backgroundColor: const Color(0xFF25D366),
+                ),
               ),
               const SizedBox(height: 16),
               // User Name

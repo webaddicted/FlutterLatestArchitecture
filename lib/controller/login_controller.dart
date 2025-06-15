@@ -24,7 +24,7 @@ class LoginController extends GetxController {
     if (callLoginRespo.value.data?.statusCode == "1") {
       customerId = callLoginRespo.value.data!.customerId.toString();
     } else {
-      getSnackbar(
+      getSnackBar(
           title: StringConst.error,
           subTitle: callLoginRespo.value.status.toString()+callLoginRespo.value.message.toString(),
           isSuccess: false);

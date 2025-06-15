@@ -33,7 +33,7 @@ Future<void> initFirebase() async {
   });
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
     printLog(msg: 'Notification clicked! The app was in background.');
-    getSnackbar(
+    getSnackBar(
         title: "onMessageOpenedApp",
         subTitle: "${message.notification?.body}",
         isSuccess: true);
@@ -145,7 +145,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   printLog(msg: 'A bg message just showed up :  ${message.messageId}');
   if (message.notification != null) {
-    getSnackbar(
+    getSnackBar(
         title:
             "_firebaseMessagingBackgroundHandler ${message.notification?.title}",
         subTitle: "${message.notification?.body}",

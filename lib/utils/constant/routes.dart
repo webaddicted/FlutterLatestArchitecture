@@ -1,5 +1,7 @@
 import 'package:get/route_manager.dart';
 import 'package:pingmexx/utils/constant/routers_const.dart';
+import 'package:pingmexx/view/profile/reported_users_screen.dart';
+import 'package:pingmexx/view/profile/user_profile_screen.dart';
 import 'package:pingmexx/view/splash/onboarding_page.dart';
 import 'package:pingmexx/view/splash/splash_page.dart';
 import 'package:pingmexx/view/home_page/home_screen.dart';
@@ -18,6 +20,6 @@ List<GetPage> routes() => [
       GetPage(name: RoutersConst.home, page: () => const HomeScreen()),
       GetPage(name: RoutersConst.allUser, page: () => const AllUsersScreen()),
       GetPage(name: RoutersConst.friendRequests, page: () => const FriendRequestsScreen()),
-
-
+      GetPage(name: RoutersConst.profile, page: () => UserProfileScreen()),
+      GetPage(name: RoutersConst.reportedUsers, page: () => ReportedUsersScreen()),
     ];
